@@ -1,0 +1,24 @@
+[CmdletBinding()]
+param([ValidateSet('Audit','Prepare','InstallApps')][string]$Mode = 'Audit')
+$ErrorActionPreference = 'Stop'
+Import-Module (Join-Path $PSScriptRoot 'Bridge.psm1') -Force
+$root = Split-Path $PSScriptRoot -Parent
+$before = Get-BridgeInventory
+if ($Mode -eq 'Audit') {
+    [pscustomobject]@{Inventory=$before;Plan=@(Get-BridgePlan $before)} | ConvertTo-Json -Depth 8
+    return
+}
+$stateDir = Initialize-BridgeState $root
+if ($Mode -eq 'InstallApps') {
+    if ($before.WindowsBuild -lt 19041) { throw 'Windows 10 build 19041 or newer is required for this route.' }
+    if (-not $before.WingetPresent) { throw 'Install/update Microsoft App Installer from Microsoft Store, then reopen this wizard. No alternate package manager is installed automatically.' }
+    foreach ($app in @(@('ObsPresent','OBSProject.OBSStudio'),@('DiscordPresent','Discord.Discord'))) {
+        if (-not $before.($app[0])) {
+            Write-Output "Installing $($app[1]); review vendor installer/UAC/license prompts."
+            & winget install --id $app[1] --exact --source winget --interactive --no-upgrade
+            if ($LASTEXITCODE -ne 0) { throw "Installer stopped with exit $LASTEXITCODE. Setup is partial; re-run Audit. No restart was requested by this script." }
+        }
+    }
+}
+$after = Get-BridgeInventory
+[pscustomobject]@{Inventory=$after;Plan=@(Get-BridgePlan $after)} | ConvertTo-Json -Depth 8

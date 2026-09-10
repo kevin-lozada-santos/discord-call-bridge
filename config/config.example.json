@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "defaultRecipient": null,
+  "obsExecutable": null,
+  "discordExecutable": null,
+  "voiceApplication": null,
+  "obsProfile": "Discord Call Bridge",
+  "obsSceneCollection": "Discord Call Bridge",
+  "outboundPlayback": null,
+  "outboundRecording": null,
+  "returnPlayback": null,
+  "returnRecording": null,
+  "headphones": null,
+  "sampleRateHz": 48000
+}

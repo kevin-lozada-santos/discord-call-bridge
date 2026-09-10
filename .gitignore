@@ -1,0 +1,8 @@
+*.zip
+*.log
+__pycache__/
+dist/
+local/
+config.json
+previous-settings.json
+state.json
