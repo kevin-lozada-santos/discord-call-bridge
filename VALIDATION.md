@@ -27,3 +27,13 @@ Use tests/Validate.ps1 for safe fixture checks. Use the acceptance checklist for
 - Bootstrap Prepare, driver installer and plugin installer are invoked without acknowledgement and verified to stop before mutation. Existing positive-path fixture tests now supply explicit test confirmation. Audit remains read-only with the warning.
 - CLI flags are attestations, not account identity verification. The skill separately requires user confirmation before setup/testing/dialing. No account creation, switching, login inspection or credential handling was added.
 - ZIP content and a downloaded private release are revalidated for this update. Actual Discord account state and second-machine audio remain untested.
+
+## Version 0.1.2 email-report fixes
+
+Source report: email subject "Discord Call Bridge: blockers to a one-click install and call", September 10, 2026, 4:16 AM. The report describes a Windows 10 build 19045 x64 trial; its account/participant details and full private message are not bundled.
+
+Regression.ps1 first failed on three observed package contracts: repeated extracted-package install refused an existing folder; driver launch requested Hidden rather than a visible UI; inventory ignored the running Discord executable. The same regression test passes after the fixes. Installer execution remains mocked: it proves visible RunAs arguments, progress semantics and endpoint classification, not an actual UAC or driver installation.
+
+Updates now stage source and preserve scoped prior-source backups and marketplace entries. Running Discord executable paths take priority over inactive folders (explicit user path still wins). Driver progress is persisted across restarts, visible interactive installation is requested, and both enabled endpoints are checked separately from process exit. Existing account gate, cancellation/signature refusal, isolated profile fixtures and wizard smoke tests remain required.
+
+Native capture error on Windows 10 (`SetIsBorderRequired`, 0x80004002) was reported by email, not reproduced on this packaging machine. The new capability-discovered screenshot-based Computer Use fallback is guidance for supported hosts, not an implementation or verification of a new capture runtime. Voice activation and second-machine two-way audio remain unverified. No calls, account changes or audio mutations are performed by these tests.

@@ -4,7 +4,7 @@ Use a separate Discord account dedicated to ChatGPT/Codex. Do not use your perso
 
 Explicitly confirm that the dedicated account is currently signed in and in use before setup, testing, or dialing. Do not treat reading the warning, a stored recipient, old acceptance report, or prior user permissions as this confirmation. The wizard requires a fresh acknowledgement each session. If using the skill directly, obtain this explicit confirmation before proceeding; do not switch accounts or handle credentials on the user's behalf. Ending a call or restoring existing settings must remain possible without this prerequisite.
 
-A portable Codex plugin and Windows setup wizard for routing assistant Voice into Discord and caller audio back into Voice. Version 0.1.1 is a private second-machine trial, not a universal or unattended calling product.
+A portable Codex plugin and Windows setup wizard for routing assistant Voice into Discord and caller audio back into Voice. Version 0.1.2 is a private second-machine trial, not a universal or unattended calling product.
 
 ## Start on the second Windows machine
 
@@ -22,7 +22,7 @@ Windows x64, Windows PowerShell 5.1, Windows 10 build 19041+ or Windows 11, OBS 
 
 Python, Node, Git and GitHub CLI are not required to use the ZIP. WinGet is needed only for the app-install button; if missing use Microsoft's App Installer from Microsoft Store or the official OBS/Discord installers. Existing custom install paths can be entered in the local config before running InstallApps.
 
-The plugin installer copies to `%USERPROFILE%\plugins\discord-call-bridge`, appends a personal marketplace entry preserving unrelated entries, and runs `codex plugin add discord-call-bridge@<actual marketplace name>`. It refuses to overwrite an existing destination. Registration backups are adjacent to the marketplace file. The standard personal marketplace is implicitly discovered; no marketplace-add command is needed. If CLI is unavailable, registration remains available for the Codex plugin browser. Start a **new Codex task** after installation and request `$discord-call` setup or test; verify it actually loads the plugin skill.
+The plugin installer copies to `%USERPROFILE%\plugins\discord-call-bridge`, appends a personal marketplace entry preserving unrelated entries, and runs `codex plugin add discord-call-bridge@<actual marketplace name>`. Updates stage the new source and automatically preserve the previous source in a scoped backup under `%USERPROFILE%\plugins\discord-call-bridge-backups`; marketplace identity is validated before replacement. Junction/link destinations are refused. Registration backups are adjacent to the marketplace file. The standard personal marketplace is implicitly discovered; no marketplace-add command is needed. If CLI is unavailable, registration remains available for the Codex plugin browser. Start a **new Codex task** after installation and request `$discord-call` setup or test; verify it actually loads the plugin skill.
 
 Current commands were checked with local Codex CLI 0.153.4 using `plugin add --help` and `plugin remove --help`. Official [plugin packaging documentation](https://developers.openai.com/plugins/build/plugins) supplies the manifest/marketplace conventions. Runtime plugin installation on the second host still needs validation.
 
@@ -50,6 +50,14 @@ See [VALIDATION.md](VALIDATION.md) for first-machine evidence and [acceptance ch
 
 No public listing, sale, third-party binary redistribution, account permission or commercial compatibility claim is included in this private trial.
 
-## Updating from 0.1.0
+## Updating from earlier versions
 
-Keep the old ZIP/release for rollback. Remove the installed old plugin through Codex if installed, then rename the existing plugin source folder as a backup before running the new installer. Keep local device preferences and restore records. The new wizard always starts with the dedicated-account confirmation unchecked, including after reboot. Start a new Codex task after installing the update. Existing personal marketplace entries are preserved.
+Keep the old ZIP/release for rollback. Run the new extracted package installer; it stages the update and preserves the existing source automatically in a dated scoped backup. No manual rename is required. Keep local device preferences and restore records. The new wizard always starts with the dedicated-account confirmation unchecked, including after reboot. Start a new Codex task after installing the update. Existing personal marketplace entries are preserved.
+
+## Preflight, visible installers and resume
+
+Read [host preflight and Windows 10 screenshot fallback](skills/discord-call/references/host-preflight.md) before installation. Detect reports executable selection, native-control/Voice unknowns and cable evidence. WinGet is required only when an app is missing; already-installed apps are reused without requiring it. Windows 10 can use an available supported screenshot-based Computer Use interface instead of a failed capture path; otherwise manual controls remain necessary.
+
+Driver installers now open visibly after UAC. Their progress records distinguish Downloading, Downloaded, AwaitingUac, Pending, Cancelled, Failed, RestartRequired and DevicesDetected. A launched process or exit code never establishes working audio. Complete or cancel the visible installer; if its window is unusable, inspect that pending process before retrying. The wizard blocks launching a second console for the same helper while its previous console remains open. After any user-approved reboot, reopen Setup.cmd, confirm the dedicated account, use Detect for fresh endpoint evidence, then Finish / Restore > Refresh saved setup progress. Saved timestamps are historical evidence, not current readiness. Close an old helper console only after resolving its installer before retrying.
+
+App/plugin stage records live in `%LOCALAPPDATA%\DiscordCallBridge`; driver records are in its downloads subfolder. Separate per-stage files preserve progress without overwriting other stages. Plugin installation reports InstalledNeedsReload until the user verifies a new task has loaded the skill. Routes, local intelligibility, remote hearing and inbound conversation remain separate user-attested acceptance stages. No saved progress unlocks the account prerequisite or auto-dials.

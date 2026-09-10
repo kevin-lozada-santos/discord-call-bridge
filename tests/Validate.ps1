@@ -57,11 +57,13 @@ if ((Get-Content -LiteralPath $market -Raw | ConvertFrom-Json).plugins.Count -ne
     try { & (Join-Path $root 'scripts\InstallDriver.ps1') -DedicatedAccountConfirmed -DownloadRoot (Join-Path $scratch 'mock downloads') }
     catch { $cancelled=$_.Exception.Message -match 'cancelled or failed to launch' }
     if (-not $cancelled) { throw 'UAC cancellation did not remain incomplete' }
+    if ((Get-Content -LiteralPath (Join-Path $scratch 'mock downloads\VBCable-progress.json') -Raw | ConvertFrom-Json).status -ne 'Cancelled') { throw 'Cancellation progress was lost' }
     function Get-AuthenticodeSignature { param($LiteralPath) [pscustomobject]@{Status='NotSigned';SignerCertificate=$null} }
     $rejected=$false
     try { & (Join-Path $root 'scripts\InstallDriver.ps1') -DedicatedAccountConfirmed -DownloadRoot (Join-Path $scratch 'mock downloads') }
     catch { $rejected=$_.Exception.Message -match 'signature could not be validated' }
     if (-not $rejected) { throw 'Unsigned installer not rejected' }
+    if ((Get-Content -LiteralPath (Join-Path $scratch 'mock downloads\VBCable-progress.json') -Raw | ConvertFrom-Json).status -ne 'Failed') { throw 'Signature failure progress was not recorded' }
 }
 & (Join-Path $root 'scripts\SetupWizard.ps1') -SmokeTest
 Write-Output 'PASS: PowerShell syntax; missing/unknown dependencies; unset config; independent routes; feedback rejection; resumable state; installer dry runs; wizard page construction.'

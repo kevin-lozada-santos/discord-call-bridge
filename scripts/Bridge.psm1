@@ -5,8 +5,13 @@ function Get-BridgeInventory {
     if (Test-Path -LiteralPath $ConfigPath) { $cfg = Get-Content -LiteralPath $ConfigPath -Raw | ConvertFrom-Json }
     $obs = Join-Path $env:ProgramFiles 'obs-studio\bin\64bit\obs64.exe'
     if ($cfg -and $cfg.obsExecutable) { $obs = $cfg.obsExecutable }
-    $discord = @(Get-ChildItem -Path (Join-Path $env:LOCALAPPDATA 'Discord\app-*\Discord.exe') -ErrorAction SilentlyContinue | Sort-Object LastWriteTime -Descending | Select-Object -First 1)
-    if ($cfg -and $cfg.discordExecutable) { $discord = @(Get-Item -LiteralPath $cfg.discordExecutable -ErrorAction SilentlyContinue) }
+    $discordSource='Installed version fallback'
+    $discord = @(Get-ChildItem -Path (Join-Path $env:LOCALAPPDATA 'Discord\app-*\Discord.exe') -ErrorAction SilentlyContinue | Sort-Object @{Expression={try {[version]($_.Directory.Name -replace '^app-','')} catch {[version]'0.0'}};Descending=$true} | Select-Object -First 1)
+    $runningPaths=@(Get-Process -Name Discord -ErrorAction SilentlyContinue | ForEach-Object { try { if ($_.Path) { $_.Path } } catch {} } | Sort-Object -Unique)
+    if ($runningPaths.Count -eq 1 -and (Test-Path -LiteralPath $runningPaths[0])) {
+        $discord=@(Get-Item -LiteralPath $runningPaths[0]); $discordSource='Running process'
+    }
+    if ($cfg -and $cfg.discordExecutable) { $discord = @(Get-Item -LiteralPath $cfg.discordExecutable -ErrorAction SilentlyContinue); $discordSource='Explicit configuration override' }
     $endpointError = $null
     try { $endpoints = @(Get-PnpDevice -Class AudioEndpoint -PresentOnly -ErrorAction Stop | Select-Object FriendlyName,Status,InstanceId) }
     catch { $endpoints = @(); $endpointError = $_.Exception.Message }
@@ -19,11 +24,15 @@ function Get-BridgeInventory {
         ObsVersion = $obsVersion
         DiscordPresent = ($discord.Count -gt 0)
         DiscordVersion = $(if ($discord.Count) { $discord[0].VersionInfo.ProductVersion } else { $null })
+        DiscordExecutable = $(if ($discord.Count) { $discord[0].FullName } else { $null })
+        DiscordSelection = $discordSource
+        DiscordRunningPaths = $runningPaths
         WingetPresent = [bool](Get-Command winget -ErrorAction SilentlyContinue)
         CodexCliPresent = [bool](Get-Command codex -ErrorAction SilentlyContinue)
         Endpoints = $endpoints
         EndpointError = $endpointError
         VoiceAvailability = 'Requires in-app verification'
+        NativeControl = 'Requires supported host UI capture/control check; shell inventory cannot verify it'
         SignalFlow = 'Not tested by inventory'
     }
 }
@@ -73,3 +82,23 @@ function Assert-DedicatedAccount {
     if (-not $Confirmed) { throw ((Get-DedicatedAccountWarning) + ' Explicitly confirm that the dedicated account is currently in use. For CLI setup, pass -DedicatedAccountConfirmed only after making that confirmation.') }
 }
 Export-ModuleMember -Function Get-DedicatedAccountWarning,Assert-DedicatedAccount
+
+function Save-BridgeProgress {
+    param([string]$StateDir,[string]$Stage,[string]$Status,[string]$Detail)
+    New-Item -ItemType Directory -Path $StateDir -Force | Out-Null
+    # One file per stage prevents independent installers from overwriting other stages.
+    if ($Stage -notmatch '^[A-Za-z]+$') { throw 'Invalid progress stage' }
+    $record=[pscustomobject]@{stage=$Stage;status=$Status;at=[DateTime]::UtcNow.ToString('o');detail=$Detail}
+    $target=Join-Path $StateDir ($Stage+'-progress.json')
+    $temporary=$target+'.'+[guid]::NewGuid().ToString('N')+'.tmp'
+    $record | ConvertTo-Json -Depth 6 | Set-Content -LiteralPath $temporary -Encoding UTF8
+    Move-Item -LiteralPath $temporary -Destination $target -Force
+}
+function Test-BridgeDriverEndpoints {
+    param([string]$Driver,$Inventory)
+    if ($Inventory.EndpointError) { return $false }
+    $names=@($Inventory.Endpoints | Where-Object Status -eq 'OK' | ForEach-Object FriendlyName)
+    if ($Driver -eq 'VBCable') { return [bool](($names -match '^CABLE Input|^Speakers \(VB-Audio Virtual Cable\)') -and ($names -match '^CABLE Output')) }
+    return [bool](($names -match '^Hi-Fi Cable Input|^Speakers \(VB-Audio Hi-Fi Cable\)') -and ($names -match '^Hi-Fi Cable Output'))
+}
+Export-ModuleMember -Function Save-BridgeProgress,Test-BridgeDriverEndpoints

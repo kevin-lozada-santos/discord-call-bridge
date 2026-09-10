@@ -1,6 +1,6 @@
 {
   "name": "discord-call-bridge",
-  "version": "0.1.1+codex.20260910080604",
+  "version": "0.1.2+codex.20260910082559",
   "description": "Guided Windows setup and verified two-way Discord Voice routing.",
   "author": {
     "name": "Local developer"

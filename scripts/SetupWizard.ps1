@@ -49,18 +49,23 @@ $accountCheck.Add_CheckedChanged({
 })
 foreach ($page in $tabs.TabPages) { if ($page -ne $accountPage) { $page.Enabled=$false } }
 function Show-Failure($err) { [Windows.Forms.MessageBox]::Show([string]$err,'Setup incomplete') | Out-Null }
+$script:helperProcesses=@{}
 function Run-Helper($file,$arguments='') {
     # Only fixed helper names and fixed mode arguments are supplied by wizard buttons.
     Assert-DedicatedAccount $accountCheck.Checked
+    if ($script:helperProcesses.ContainsKey($file) -and -not $script:helperProcesses[$file].HasExited) {
+        [Windows.Forms.MessageBox]::Show('An installer console for this step is still open. Complete or cancel it and close its console before retrying. Detect / saved progress shows current evidence.','Step still open') | Out-Null; return
+    }
     $arguments += ' -DedicatedAccountConfirmed'
     $helper=Join-Path $PSScriptRoot $file
     $proc=Start-Process -FilePath 'powershell.exe' -ArgumentList ('-NoProfile -ExecutionPolicy Bypass -NoExit -File "'+$helper+'" '+$arguments) -PassThru
+    $script:helperProcesses[$file]=$proc
     $null=$proc # Visible interactive installer/status console deliberately requested by wizard action.
 }
 $null=Add-Text $pages['1 Detect'] 'Begin on the second Windows machine. No setup action runs until you click it. Do not configure while a call/recording/stream is active. Detect is read-only; presence is not audio proof.' 15
 $inventoryBox=Add-Text $pages['1 Detect'] 'Click Detect to inspect installed apps, versions and audio endpoints.' 135 445
 $null=Add-Button $pages['1 Detect'] 'Detect / refresh (read-only)' 95 {
-    try { $script:inventory=Get-BridgeInventory; $inventoryBox.Text=([pscustomobject]@{Inventory=$script:inventory;Next=@(Get-BridgePlan $script:inventory)} | ConvertTo-Json -Depth 8) } catch { Show-Failure $_ }
+    try { $script:inventory=Get-BridgeInventory; $inventoryBox.Text=([pscustomobject]@{Inventory=$script:inventory;HostPreflight='Before installation: can the host capture and control native apps, or provide a working screenshot-based Computer Use substitute? Can you start actual Voice and select its input? If unavailable, use manual setup; software installation cannot supply those capabilities.';Next=@(Get-BridgePlan $script:inventory)} | ConvertTo-Json -Depth 8) } catch { Show-Failure $_ }
 }
 $null=Add-Text $pages['2 Install'] 'Reuse existing software. If Detect missed a custom install, enter its executable path in config.json before installing. App installs use WinGet official vendor packages with hash checks. Driver buttons download signed vendor packages and request UAC only for the installer. Review vendor terms first. After any required reboot, reopen this wizard and Detect again.' 15 105
 $null=Add-Button $pages['2 Install'] 'Install missing OBS / Discord apps' 140 { Run-Helper 'Bootstrap.ps1' '-Mode InstallApps' }
@@ -118,6 +123,14 @@ $null=Add-Button $pages['5 Finish / Restore'] 'Save acceptance / incomplete repo
         $result=[pscustomobject]@{at=[DateTime]::UtcNow.ToString('o');evidence='User attestation in setup wizard';complete=(@($stages | Where-Object {-not $_.userConfirmed}).Count -eq 0);stages=$stages}
         $result | ConvertTo-Json -Depth 8 | Set-Content -LiteralPath (Join-Path $stateDir 'acceptance.json') -Encoding UTF8
         $finishBox.Text=$result | ConvertTo-Json -Depth 8
+    } catch { Show-Failure $_ }
+}
+$null=Add-Button $pages['5 Finish / Restore'] 'Refresh saved setup progress (historical evidence)' 590 {
+    try {
+        $progressFiles=@(Get-ChildItem -Path (Join-Path $stateDir '*-progress.json'),(Join-Path $stateDir 'downloads\*-progress.json') -ErrorAction SilentlyContinue)
+        $saved=@($progressFiles | ForEach-Object { Get-Content -LiteralPath $_.FullName -Raw | ConvertFrom-Json })
+        $finishBox.Text=($saved | ConvertTo-Json -Depth 8)
+        if (-not $saved.Count) { $finishBox.Text='No saved progress yet. Missing stages remain unverified.' }
     } catch { Show-Failure $_ }
 }
 $null=Add-Text $pages['5 Finish / Restore'] (Get-Content -LiteralPath (Join-Path $root 'RESTORE.md') -Raw) 245 340
