@@ -5,6 +5,10 @@ description: Set up, test, recover, or use a Windows Discord audio bridge for an
 
 # Discord call bridge
 
+Use a separate Discord account dedicated to ChatGPT/Codex. Do not use your personal or main Discord account for this bridge. Set up and sign in to the dedicated account before continuing.
+
+Explicitly confirm that the dedicated account is currently signed in and in use before setup, testing, or dialing. Do not treat reading the warning, a stored recipient, old acceptance report, or prior user permissions as this confirmation. The wizard requires a fresh acknowledgement each session. If using the skill directly, obtain this explicit confirmation before proceeding; do not switch accounts or handle credentials on the user's behalf. Ending a call or restoring existing settings must remain possible without this prerequisite.
+
 This plugin provides routing instructions and setup helpers, not a voice engine, device driver, native-control API, or always-on listener. A new machine has no accepted audio test and no recipient by default.
 
 ## Establish scope and capability

@@ -1,7 +1,9 @@
 [CmdletBinding(SupportsShouldProcess)]
-param([ValidateSet('VBCable','HiFiCable')][string]$Driver = 'VBCable', [switch]$DownloadOnly,
+param([switch]$DedicatedAccountConfirmed, [ValidateSet('VBCable','HiFiCable')][string]$Driver = 'VBCable', [switch]$DownloadOnly,
     [string]$DownloadRoot = (Join-Path $env:LOCALAPPDATA 'DiscordCallBridge\downloads'))
 $ErrorActionPreference = 'Stop'
+Import-Module (Join-Path $PSScriptRoot 'Bridge.psm1') -Force
+Assert-DedicatedAccount $DedicatedAccountConfirmed.IsPresent
 if ($Driver -eq 'VBCable') {
     $uri = 'https://download.vb-audio.com/Download_CABLE/VBCABLE_Driver_Pack45.zip'
     $name = 'VBCABLE_Driver_Pack45.zip'

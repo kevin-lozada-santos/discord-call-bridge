@@ -1,8 +1,10 @@
 [CmdletBinding()]
-param([ValidateSet('Audit','Prepare','InstallApps')][string]$Mode = 'Audit')
+param([switch]$DedicatedAccountConfirmed, [ValidateSet('Audit','Prepare','InstallApps')][string]$Mode = 'Audit')
 $ErrorActionPreference = 'Stop'
 Import-Module (Join-Path $PSScriptRoot 'Bridge.psm1') -Force
 $root = Split-Path $PSScriptRoot -Parent
+if ($Mode -ne 'Audit') { Assert-DedicatedAccount $DedicatedAccountConfirmed.IsPresent }
+else { Write-Warning (Get-DedicatedAccountWarning) }
 $before = Get-BridgeInventory
 if ($Mode -eq 'Audit') {
     [pscustomobject]@{Inventory=$before;Plan=@(Get-BridgePlan $before)} | ConvertTo-Json -Depth 8

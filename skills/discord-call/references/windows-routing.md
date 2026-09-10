@@ -1,5 +1,9 @@
 # Windows setup and fault isolation
 
+Use a separate Discord account dedicated to ChatGPT/Codex. Do not use your personal or main Discord account for this bridge. Set up and sign in to the dedicated account before continuing.
+
+Explicitly confirm that the dedicated account is currently signed in and in use before setup, testing, or dialing. Do not treat reading the warning, a stored recipient, old acceptance report, or prior user permissions as this confirmation. The wizard requires a fresh acknowledgement each session. If using the skill directly, obtain this explicit confirmation before proceeding; do not switch accounts or handle credentials on the user's behalf. Ending a call or restoring existing settings must remain possible without this prerequisite.
+
 Use the setup wizard's Detect page first. Windows 10 build 19041+ or Windows 11 and OBS 28+ are required for the application-capture design. This release targets Windows x64. Other architectures and individual app/capture combinations need separate qualification. A detected device or configured name does not establish working audio.
 
 ## Installation and cost boundaries

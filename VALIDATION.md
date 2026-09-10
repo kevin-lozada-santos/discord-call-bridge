@@ -19,3 +19,11 @@ Not run here:
 - Second-machine Voice availability/native automation capability, audio route configuration, local intelligibility, remote hearing, inbound speech or hang-up.
 
 Use tests/Validate.ps1 for safe fixture checks. Use the acceptance checklist for the actual trial. Wizard checkboxes record user attestation; neither checked boxes nor exit code alone establish measured signal flow. A downloaded/installed dependency is not proof of two-way calling.
+
+## Version 0.1.1 account prerequisite update
+
+- Required initial wizard page uses an unchecked confirmation that the dedicated Discord account is currently in use. No saved configuration or old acceptance record unlocks it.
+- Native Windows Forms smoke test attempts every setup tab before acknowledgement and confirms navigation is blocked. It then confirms acknowledgement unlocks Configure and revocation relocks it. The test shows the form offscreen only and invokes no installer/audio actions.
+- Bootstrap Prepare, driver installer and plugin installer are invoked without acknowledgement and verified to stop before mutation. Existing positive-path fixture tests now supply explicit test confirmation. Audit remains read-only with the warning.
+- CLI flags are attestations, not account identity verification. The skill separately requires user confirmation before setup/testing/dialing. No account creation, switching, login inspection or credential handling was added.
+- ZIP content and a downloaded private release are revalidated for this update. Actual Discord account state and second-machine audio remain untested.

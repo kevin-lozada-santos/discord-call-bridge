@@ -64,3 +64,12 @@ function Test-BridgeConfig {
     return $issues
 }
 Export-ModuleMember -Function Get-BridgeInventory,Get-BridgePlan,Initialize-BridgeState,Test-BridgeConfig
+
+function Get-DedicatedAccountWarning {
+    return 'Use a separate Discord account dedicated to ChatGPT/Codex. Do not use your personal or main Discord account for this bridge. Set up and sign in to the dedicated account before continuing.'
+}
+function Assert-DedicatedAccount {
+    param([bool]$Confirmed = $false)
+    if (-not $Confirmed) { throw ((Get-DedicatedAccountWarning) + ' Explicitly confirm that the dedicated account is currently in use. For CLI setup, pass -DedicatedAccountConfirmed only after making that confirmation.') }
+}
+Export-ModuleMember -Function Get-DedicatedAccountWarning,Assert-DedicatedAccount

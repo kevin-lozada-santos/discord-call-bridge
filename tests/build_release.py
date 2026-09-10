@@ -9,7 +9,7 @@ import zipfile
 root = Path(__file__).resolve().parents[1]
 output = Path(sys.argv[1]).resolve()
 output.mkdir(parents=True, exist_ok=True)
-version = json.loads((root / '.codex-plugin/plugin.json').read_text())['version']
+version = json.loads((root / '.codex-plugin/plugin.json').read_text())['version'].split('+')[0]
 archive = output / f'discord-call-bridge-{version}-windows.zip'
 allowed_roots = {'.codex-plugin', 'skills', 'scripts', 'config', 'tests'}
 allowed_top = {'README.md', 'RESTORE.md', 'VALIDATION.md', 'Setup.cmd', '.gitignore'}

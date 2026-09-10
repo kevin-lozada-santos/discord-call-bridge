@@ -15,7 +15,7 @@ $tabs = New-Object Windows.Forms.TabControl
 $tabs.Dock = 'Fill'
 $form.Controls.Add($tabs)
 $pages = @{}
-foreach ($name in @('1 Detect','2 Install','3 Configure','4 Verify','5 Finish / Restore')) {
+foreach ($name in @('0 Dedicated account','1 Detect','2 Install','3 Configure','4 Verify','5 Finish / Restore')) {
     $page = New-Object Windows.Forms.TabPage
     $page.Text = $name
     $tabs.TabPages.Add($page)
@@ -33,9 +33,26 @@ function Add-Button($page,$text,$top,$action) {
     $button.Add_Click($action); $page.Controls.Add($button)
     return $button
 }
+$accountPage = $pages['0 Dedicated account']
+$null=Add-Text $accountPage (Get-DedicatedAccountWarning) 25 100
+$accountCheck=New-Object Windows.Forms.CheckBox
+$accountCheck.Text='I confirm I am signed in to a separate Discord account dedicated to ChatGPT/Codex.'
+$accountCheck.SetBounds(15,150,830,50)
+$accountPage.Controls.Add($accountCheck)
+$null=Add-Text $accountPage 'Setup stays locked until you confirm the dedicated account is in use. This confirmation applies to this wizard session only. This wizard does not create accounts, switch accounts, or inspect credentials. Close it if you need to set up the account first. After confirming, select Detect to continue.' 220 110
+$tabs.Add_Selecting({ param($sender,$eventArgs)
+    if ($eventArgs.TabPage -ne $accountPage -and -not $accountCheck.Checked) { $eventArgs.Cancel=$true }
+})
+$accountCheck.Add_CheckedChanged({
+    foreach ($page in $tabs.TabPages) { if ($page -ne $accountPage) { $page.Enabled=$accountCheck.Checked } }
+    if (-not $accountCheck.Checked) { $tabs.SelectedTab=$accountPage }
+})
+foreach ($page in $tabs.TabPages) { if ($page -ne $accountPage) { $page.Enabled=$false } }
 function Show-Failure($err) { [Windows.Forms.MessageBox]::Show([string]$err,'Setup incomplete') | Out-Null }
 function Run-Helper($file,$arguments='') {
     # Only fixed helper names and fixed mode arguments are supplied by wizard buttons.
+    Assert-DedicatedAccount $accountCheck.Checked
+    $arguments += ' -DedicatedAccountConfirmed'
     $helper=Join-Path $PSScriptRoot $file
     $proc=Start-Process -FilePath 'powershell.exe' -ArgumentList ('-NoProfile -ExecutionPolicy Bypass -NoExit -File "'+$helper+'" '+$arguments) -PassThru
     $null=$proc # Visible interactive installer/status console deliberately requested by wizard action.
@@ -105,8 +122,8 @@ $null=Add-Button $pages['5 Finish / Restore'] 'Save acceptance / incomplete repo
 }
 $null=Add-Text $pages['5 Finish / Restore'] (Get-Content -LiteralPath (Join-Path $root 'RESTORE.md') -Raw) 245 340
 if ($SmokeTest) {
-    if ($tabs.TabPages.Count -ne 5 -or $script:checks.Count -ne 8) { throw 'Wizard structure invalid' }
-    if ($SmokeImageDirectory) {
+    if ($tabs.TabPages.Count -ne 6 -or $script:checks.Count -ne 8) { throw 'Wizard structure invalid' }
+    if ($SmokeTest) {
         $form.StartPosition='Manual'
         $form.Location=New-Object Drawing.Point(-10000,-10000)
         $form.ShowInTaskbar=$false
@@ -114,6 +131,17 @@ if ($SmokeTest) {
         [Windows.Forms.Application]::DoEvents()
     }
     foreach ($page in $tabs.TabPages) {
+        if ($page -eq $accountPage) { continue }
+        $tabs.SelectedTab=$page
+        if ($tabs.SelectedTab -ne $accountPage -or $page.Enabled) { throw 'Account gate allowed unacknowledged navigation' }
+    }
+    $accountCheck.Checked=$true
+    $tabs.SelectedTab=$pages['3 Configure']
+    if ($tabs.SelectedTab -ne $pages['3 Configure'] -or -not $pages['3 Configure'].Enabled) { throw 'Acknowledgement failed to unlock setup' }
+    $accountCheck.Checked=$false
+    if ($tabs.SelectedTab -ne $accountPage -or $pages['3 Configure'].Enabled) { throw 'Revoked acknowledgement did not relock setup' }
+    foreach ($page in $tabs.TabPages) {
+        $accountCheck.Checked=($page -ne $accountPage)
         $tabs.SelectedTab=$page
         [Windows.Forms.Application]::DoEvents()
         if ($SmokeImageDirectory) {
@@ -127,7 +155,7 @@ if ($SmokeTest) {
         }
     }
     $form.Dispose()
-    Write-Output 'Wizard controls constructed and all 5 pages selected; no UI displayed and no buttons/actions invoked.'
+    Write-Output 'Wizard controls constructed and all 6 pages checked; unacknowledged navigation blocked, confirmation unlocks, revocation relocks; no setup actions invoked.'
     return
 }
 [Windows.Forms.Application]::EnableVisualStyles()

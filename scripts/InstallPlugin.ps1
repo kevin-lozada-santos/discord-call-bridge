@@ -1,6 +1,8 @@
 [CmdletBinding(SupportsShouldProcess)]
-param([switch]$RegisterOnly, [string]$ProfileRoot = $env:USERPROFILE)
+param([switch]$DedicatedAccountConfirmed, [switch]$RegisterOnly, [string]$ProfileRoot = $env:USERPROFILE)
 $ErrorActionPreference = 'Stop'
+Import-Module (Join-Path $PSScriptRoot 'Bridge.psm1') -Force
+Assert-DedicatedAccount $DedicatedAccountConfirmed.IsPresent
 $source = Split-Path $PSScriptRoot -Parent
 $target = Join-Path $ProfileRoot 'plugins\discord-call-bridge'
 $market = Join-Path $ProfileRoot '.agents\plugins\marketplace.json'
