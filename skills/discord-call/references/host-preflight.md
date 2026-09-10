@@ -5,7 +5,7 @@ Before installing dependencies or dialing, establish these independent facts:
 1. Read-only Detect: Windows build/architecture, OBS and Discord versions and executable paths, enabled send/return cable pairs, WinGet and Codex CLI presence. Running Discord path is preferred over inactive app folders unless the user configured an explicit executable. Multiple running paths or denied process metadata are unresolved, not proof of a particular active version.
 2. Through the current host's documented Computer Use capability, check that the intended native window can be observed and controlled. A sparse accessibility tree alone does not establish usable control. Do not start or change a call to probe this.
 3. Independently verify actual Voice activation, audible output and input selection. Text mode, Dictate or an end-Voice tool is not sufficient. If no supported activation interface exists, have the user start Voice in the chosen app; no paid API substitution.
-4. Report each missing capability and choose supported screenshot-based control or manual setup before installing more software in the hope it will repair the host.
+4. Separate capability blockers by step. Follow automatic-execution.md to run independent authorized dependency installation/preparation yourself even when native capture fails. Use supported screenshot-based control where available. Hand off only the blocked UI/user-only action; installing drivers is not a repair for the host capture runtime.
 
 ## Screenshot-based Computer Use substitute
 

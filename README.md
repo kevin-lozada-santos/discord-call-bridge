@@ -4,7 +4,7 @@ Use a separate Discord account dedicated to ChatGPT/Codex. Do not use your perso
 
 Explicitly confirm that the dedicated account is currently signed in and in use before setup, testing, or dialing. Do not treat reading the warning, a stored recipient, old acceptance report, or prior user permissions as this confirmation. The wizard requires a fresh acknowledgement each session. If using the skill directly, obtain this explicit confirmation before proceeding; do not switch accounts or handle credentials on the user's behalf. Ending a call or restoring existing settings must remain possible without this prerequisite.
 
-A portable Codex plugin and Windows setup wizard for routing assistant Voice into Discord and caller audio back into Voice. Version 0.1.2 is a private second-machine trial, not a universal or unattended calling product.
+A portable Codex plugin and Windows setup wizard for routing assistant Voice into Discord and caller audio back into Voice. Version 0.1.3 is a private second-machine trial, not a universal or unattended calling product.
 
 ## Start on the second Windows machine
 
@@ -14,7 +14,7 @@ A portable Codex plugin and Windows setup wizard for routing assistant Voice int
 4. **Configure** saves your recipient and device preferences plus a previous-settings restore sheet. The guide walks through dedicated OBS setup and separate send/return routes. The skill can operate available supported native UI; when unavailable, the wizard gives manual app steps. Audio is not automatically configured by editing the preferences file.
 5. **Verify** checks configured endpoint names, then tracks the real two-way call stages. **Finish / Restore** writes a local user-attested acceptance report and explains restoration/uninstall.
 
-The wizard automates supported software acquisition, narrowly scoped driver elevation and plugin registration/installation. Voice activation, account login, secure-desktop UAC, driver compatibility choices and app audio controls without a supported native automation interface remain user steps. It does not claim to fully automate every host.
+The wizard automates supported software acquisition, narrowly scoped driver elevation and plugin registration/installation. When Codex runs setup, it also operates available supported app controls for audio routing and Voice activation. Account login, secure-desktop UAC, unresolved driver compatibility choices and controls actually unavailable to Codex need narrow user handoffs. It does not claim to fully automate every host.
 
 ## Requirements and installation details
 
@@ -32,6 +32,7 @@ From the extracted folder in ordinary PowerShell. For every mutating entry point
 
 ```powershell
 .\scripts\Bootstrap.ps1                         # read-only audit
+.\scripts\Invoke-AutomaticSetup.ps1 -DedicatedAccountConfirmed -InstallMissing -VoiceApplication 'actual observed Voice app' # Codex setup runner
 .\scripts\Bootstrap.ps1 -Mode Prepare -DedicatedAccountConfirmed           # local templates only
 .\scripts\Bootstrap.ps1 -Mode InstallApps -DedicatedAccountConfirmed       # missing OBS / Discord
 .\scripts\InstallDriver.ps1 -Driver VBCable -DedicatedAccountConfirmed -WhatIf
@@ -61,3 +62,11 @@ Read [host preflight and Windows 10 screenshot fallback](skills/discord-call/ref
 Driver installers now open visibly after UAC. Their progress records distinguish Downloading, Downloaded, AwaitingUac, Pending, Cancelled, Failed, RestartRequired and DevicesDetected. A launched process or exit code never establishes working audio. Complete or cancel the visible installer; if its window is unusable, inspect that pending process before retrying. The wizard blocks launching a second console for the same helper while its previous console remains open. After any user-approved reboot, reopen Setup.cmd, confirm the dedicated account, use Detect for fresh endpoint evidence, then Finish / Restore > Refresh saved setup progress. Saved timestamps are historical evidence, not current readiness. Close an old helper console only after resolving its installer before retrying.
 
 App/plugin stage records live in `%LOCALAPPDATA%\DiscordCallBridge`; driver records are in its downloads subfolder. Separate per-stage files preserve progress without overwriting other stages. Plugin installation reports InstalledNeedsReload until the user verifies a new task has loaded the skill. Routes, local intelligibility, remote hearing and inbound conversation remain separate user-attested acceptance stages. No saved progress unlocks the account prerequisite or auto-dials.
+
+## Codex must execute requested setup
+
+Ask Codex to "set up and verify this bridge" or "fix the missing dependencies and finish setup". After the required current dedicated-account confirmation, the skill explicitly requires Codex to run the bundled setup/install helpers, apply supported native or screenshot-based routing controls, start available Voice controls and verify results. It must not stop at a checklist telling you to use the wizard while it can execute those steps itself. For audit-only or verification-only requests, it stays read-only.
+
+Manual steps are limited to actual UAC/credential/license/restart decisions or controls unavailable on the host. A native screenshot failure does not excuse skipping independent shell preparation and installer launch. See [automatic execution workflow](skills/discord-call/references/automatic-execution.md). These instructions improve agent behavior; they do not add a missing Voice engine or native automation runtime.
+
+The executable setup runner reuses detected dependencies, manages missing-dependency helper launches, avoids duplicate pending driver launches, selects unambiguous enabled cable endpoints and saves a concrete send/return route plan. Codex must apply that plan through supported OBS/Discord/Voice controls, activate Voice when available, and read back settings. Saved preferences and `ReadyForAgentApplication` are explicitly pending app application; neither is proof of configured audio. This version provides automatic device selection and an agent execution workflow, not a standalone app-routing driver.

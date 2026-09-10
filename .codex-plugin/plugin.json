@@ -1,6 +1,6 @@
 {
   "name": "discord-call-bridge",
-  "version": "0.1.2+codex.20260910082559",
+  "version": "0.1.3+codex.20260910084005",
   "description": "Guided Windows setup and verified two-way Discord Voice routing.",
   "author": {
     "name": "Local developer"
@@ -13,6 +13,6 @@
     "developerName": "Local developer",
     "category": "Productivity",
     "capabilities": [],
-    "defaultPrompt": "Set up and test Discord Call Bridge on this Windows machine."
+    "defaultPrompt": "Set up and verify Discord Call Bridge: execute the available installation and routing steps for me, with only necessary user handoffs."
   }
 }

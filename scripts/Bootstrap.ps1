@@ -1,16 +1,17 @@
 [CmdletBinding()]
-param([switch]$DedicatedAccountConfirmed, [ValidateSet('Audit','Prepare','InstallApps')][string]$Mode = 'Audit')
+param([switch]$DedicatedAccountConfirmed, [ValidateSet('Audit','Prepare','InstallApps')][string]$Mode = 'Audit',
+    [string]$StateDir=(Join-Path $env:LOCALAPPDATA 'DiscordCallBridge'))
 $ErrorActionPreference = 'Stop'
 Import-Module (Join-Path $PSScriptRoot 'Bridge.psm1') -Force
 $root = Split-Path $PSScriptRoot -Parent
 if ($Mode -ne 'Audit') { Assert-DedicatedAccount $DedicatedAccountConfirmed.IsPresent }
 else { Write-Warning (Get-DedicatedAccountWarning) }
-$before = Get-BridgeInventory
+$before = Get-BridgeInventory -ConfigPath (Join-Path $StateDir 'config.json')
 if ($Mode -eq 'Audit') {
     [pscustomobject]@{Inventory=$before;Plan=@(Get-BridgePlan $before)} | ConvertTo-Json -Depth 8
     return
 }
-$stateDir = Initialize-BridgeState $root
+$stateDir = Initialize-BridgeState $root $StateDir
 try {
 if ($Mode -eq 'InstallApps') {
     if ($before.WindowsBuild -lt 19041) { throw 'Windows 10 build 19041 or newer is required for this route.' }
@@ -24,7 +25,7 @@ if ($Mode -eq 'InstallApps') {
         }
     }
 }
-$after = Get-BridgeInventory
+$after = Get-BridgeInventory -ConfigPath (Join-Path $StateDir 'config.json')
 Save-BridgeProgress $stateDir 'Apps' $(if ($after.ObsPresent -and $after.DiscordPresent) {'AppsDetected'} else {'NeedsAttention'}) 'App paths detected only; check versions, host capture/control and active Voice separately.'
 [pscustomobject]@{Inventory=$after;Plan=@(Get-BridgePlan $after)} | ConvertTo-Json -Depth 8
 
