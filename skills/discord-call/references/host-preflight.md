@@ -1,24 +1,25 @@
-# Host preflight and Windows 10 fallback
+# Supported host and permissions
 
-These checks help diagnose the host; they are not a mandatory sequence. Discover capabilities and choose or adapt supported methods to the actual task:
+Recommend Windows 11 or newer, x64, without enforcing an OS version minimum. Bootstrap Audit is read-only. On other Windows versions, verify the actual app, driver and control compatibility; report concrete failures rather than blocking solely on version. Ending existing calls and restoring settings remain possible.
 
-1. Read-only Detect: Windows build/architecture, OBS and Discord versions and executable paths, enabled send/return cable pairs, WinGet and Codex CLI presence. Running Discord path is preferred over inactive app folders unless the user configured an explicit executable. Multiple running paths or denied process metadata are unresolved, not proof of a particular active version.
-2. Through the current host's documented Computer Use capability, check that the intended native window can be observed and controlled. A sparse accessibility tree alone does not establish usable control. Do not start or change a call to probe this.
-3. Independently verify actual Voice activation, audible output and input selection. Text mode, Dictate or an end-Voice tool is not sufficient. If no supported activation interface exists, have the user start Voice in the chosen app; no paid API substitution.
-4. Separate capability blockers by step. Follow automatic-execution.md to run independent authorized dependency installation/preparation yourself even when native capture fails. Use supported screenshot-based control where available. Hand off only the blocked UI/user-only action; installing drivers is not a repair for the host capture runtime.
+Recommend Full Access in Codex for this trusted plugin installation. It allows broader local files/network and can resolve sandbox download or installer-launch restrictions. It is optional; approved scoped permissions may work. Restore normal permissions afterward. Never change the access mode automatically or instruct the user to run Codex as administrator. Full Access does not grant Computer Use approval for Discord/Windows Settings, does not bypass UAC and does not repair incompatible screenshot APIs.
 
-## Screenshot-based Computer Use substitute
+Inspect actual OS/build, Discord path/version, enabled cable pairs and pending installer processes. A running Discord path takes precedence over inactive install folders unless explicitly configured. Missing or denied inventory is unknown, not absence. Verify current supported native/screenshot controls independently of the shell inventory. Read Computer Use guidance first; text or keyboard success is not screenshot/click capability.
 
-On Windows 10, a supported screenshot-based Computer Use interface can substitute for an unavailable accessibility/capture path. Discover the tools actually exposed in this session and read their current documentation. Capture a fresh screenshot, verify the intended window/recipient visually, then use only that interface's documented input controls and observed coordinates. Reobserve after each change; never guess coordinates or native APIs.
+Verify actual Voice activation, speech playback and device selection. A text chat or end-Voice tool proves none of those. If a supported control fails, refresh its target and retry once, then investigate an available supported alternative. Do not invent APIs, repeat the same failing capture path or silently change to a browser product. Complete independent setup before handing off the exact unavailable action.
 
-The trial on Windows 10 build 19045 reported `SetIsBorderRequired failed: No such interface supported (0x80004002)` twice, including after refreshing the window. This is a capture-runtime failure, not proof Discord or the audio route is broken. If one documented refresh/retry still fails, discover an independently available screenshot-and-input Computer Use capability. Merely renaming the same failing API or repeating its capture loop is not a fallback. If no such interface works, investigate other documented control/API methods and suitable routing alternatives. Report only the specific action that remains unavailable after checking supported options; use a minimal manual handoff when necessary. A browser-only tool does not control native Discord/OBS. Explain a browser substitution and resolve product/account implications if the request leaves a consequential choice open; do not silently change the requested product.
+## Installers and resume
 
-Do not fabricate APIs or bypass host protections. A relevant supported repair or alternative may be used within setup scope; establish its purpose and preserve unrelated settings. Installing an audio driver alone does not repair a capture API. No Windows 10 capture repair is claimed by this plugin; qualify the selected fallback on that machine.
+Use only official packages and validate publisher signatures before UAC. Secure-desktop approval, license decisions and user-controlled restarts remain handoffs. Elevated installer windows may be inaccessible to the helper even with Full Access. A launched process is not completion; inspect it before any retry. After restart, detect endpoints again and keep historical receipts labelled historical.
 
-## Private ZIP access and Git certificate errors
+## Private release and Git access
 
-Private GitHub resources return 404 when unauthenticated. Sign in to the authorized GitHub account and download the release ZIP through GitHub. Do not make the repository public to resolve access. Git is optional for ZIP installation.
+Private GitHub ZIPs require the user's authorized signed-in account. Do not make a repository public to resolve 404 errors. Git is optional for ZIP installation.
 
-For a Git checkout reporting `unable to get local issuer certificate`, inspect the installed Git TLS backend and corporate trust requirements. On supported Git for Windows, an explicit per-command `git -c http.sslBackend=schannel clone <authorized-private-repository-url>` uses the Windows certificate store. This is a compatibility option, not proof the certificate chain is valid; keep certificate verification enabled and use the organization's approved trust setup if the error persists. Never use sslVerify=false or copy another user's credentials.
+For Git certificate errors, inspect the trust setup. A per-command `git -c http.sslBackend=schannel` may use the Windows certificate store on supported Git for Windows. Keep certificate verification enabled; do not bypass trust checks or copy credentials.
 
-See the official [Git HTTP configuration reference](https://github.com/git/git/blob/master/Documentation/config/http.adoc) for backend support and certificate-store behavior.
+## References
+
+- [Windows sandbox and permissions](https://learn.chatgpt.com/docs/windows/windows-sandbox)
+- [Windows capture API availability](https://learn.microsoft.com/en-us/uwp/api/windows.graphics.capture.graphicscapturesession.isborderrequired)
+- [Git HTTP configuration](https://github.com/git/git/blob/master/Documentation/config/http.adoc)

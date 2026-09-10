@@ -4,6 +4,7 @@ param([switch]$DedicatedAccountConfirmed, [ValidateSet('VBCable','HiFiCable')][s
 $ErrorActionPreference = 'Stop'
 Import-Module (Join-Path $PSScriptRoot 'Bridge.psm1') -Force
 Assert-DedicatedAccount $DedicatedAccountConfirmed.IsPresent
+Write-Output (Get-BridgeInstallationAdvice)
 if ($Driver -eq 'VBCable') {
     $uri = 'https://download.vb-audio.com/Download_CABLE/VBCABLE_Driver_Pack45.zip'
     $name = 'VBCABLE_Driver_Pack45.zip'

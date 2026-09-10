@@ -3,8 +3,6 @@ function Get-BridgeInventory {
     param([string]$ConfigPath = (Join-Path $env:LOCALAPPDATA 'DiscordCallBridge\config.json'))
     $cfg = $null
     if (Test-Path -LiteralPath $ConfigPath) { $cfg = Get-Content -LiteralPath $ConfigPath -Raw | ConvertFrom-Json }
-    $obs = Join-Path $env:ProgramFiles 'obs-studio\bin\64bit\obs64.exe'
-    if ($cfg -and $cfg.obsExecutable) { $obs = $cfg.obsExecutable }
     $discordSource='Installed version fallback'
     $discord = @(Get-ChildItem -Path (Join-Path $env:LOCALAPPDATA 'Discord\app-*\Discord.exe') -ErrorAction SilentlyContinue | Sort-Object @{Expression={try {[version]($_.Directory.Name -replace '^app-','')} catch {[version]'0.0'}};Descending=$true} | Select-Object -First 1)
     $runningPaths=@(Get-Process -Name Discord -ErrorAction SilentlyContinue | ForEach-Object { try { if ($_.Path) { $_.Path } } catch {} } | Sort-Object -Unique)
@@ -15,13 +13,9 @@ function Get-BridgeInventory {
     $endpointError = $null
     try { $endpoints = @(Get-PnpDevice -Class AudioEndpoint -PresentOnly -ErrorAction Stop | Select-Object FriendlyName,Status,InstanceId) }
     catch { $endpoints = @(); $endpointError = $_.Exception.Message }
-    $obsVersion = $null
-    if (Test-Path -LiteralPath $obs) { $obsVersion = (Get-Item -LiteralPath $obs).VersionInfo.ProductVersion }
     [pscustomobject]@{
-        WindowsBuild = [Environment]::OSVersion.Version.Build
+        WindowsBuild = [int](Get-CimInstance -ClassName Win32_OperatingSystem).BuildNumber
         Architecture = $env:PROCESSOR_ARCHITECTURE
-        ObsPresent = (Test-Path -LiteralPath $obs)
-        ObsVersion = $obsVersion
         DiscordPresent = ($discord.Count -gt 0)
         DiscordVersion = $(if ($discord.Count) { $discord[0].VersionInfo.ProductVersion } else { $null })
         DiscordExecutable = $(if ($discord.Count) { $discord[0].FullName } else { $null })
@@ -39,8 +33,6 @@ function Get-BridgeInventory {
 function Get-BridgePlan {
     param($Inventory)
     $steps = @()
-    if ($Inventory.WindowsBuild -lt 19041) { $steps += 'Unsupported Windows build for application capture: update Windows manually.' }
-    if (-not $Inventory.ObsPresent) { $steps += 'OBS not found at configured/default path: locate custom install or install OBSProject.OBSStudio.' }
     if (-not $Inventory.DiscordPresent) { $steps += 'Discord not found: locate custom install or install Discord.Discord.' }
     if ($Inventory.EndpointError) { $steps += 'Audio enumeration unknown: resolve error before installing drivers.' }
     else {
@@ -48,7 +40,7 @@ function Get-BridgePlan {
         if (-not ($names -match '^CABLE Input|^Speakers \(VB-Audio Virtual Cable\)')) { $steps += 'Outbound cable missing or differently named: verify existing cable before VB-CABLE install.' }
         if (-not ($names -match 'Hi-Fi Cable Input|^Speakers \(VB-Audio Hi-Fi Cable\)')) { $steps += 'Return cable missing or differently named: select a separate compatible cable; Hi-Fi compatibility needs vendor/user review.' }
     }
-    $steps += 'Configure isolated OBS profile, Discord and Voice input; verify intelligible two-way audio manually/in supported UI.'
+    $steps += 'Configure direct per-app Voice playback, Discord input/output and a separate Voice input; verify intelligible two-way audio.'
     return $steps
 }
 function Initialize-BridgeState {
@@ -102,3 +94,8 @@ function Test-BridgeDriverEndpoints {
     return [bool](($names -match '^Hi-Fi Cable Input|^Speakers \(VB-Audio Hi-Fi Cable\)') -and ($names -match '^Hi-Fi Cable Output'))
 }
 Export-ModuleMember -Function Save-BridgeProgress,Test-BridgeDriverEndpoints
+
+function Get-BridgeInstallationAdvice {
+    'Windows 11 or newer is recommended; verify app, driver and control compatibility on the actual host. Recommended: use Full Access in Codex for this trusted plugin installation so downloads, local plugin registration and installer launches can run. Full Access is optional and broadens file/network access; restore your usual permissions afterward. It does not grant Computer Use app approval or Windows administrator privileges. Keep Codex running normally; approve UAC only for the verified vendor installer. Never change permissions automatically.'
+}
+Export-ModuleMember -Function Get-BridgeInstallationAdvice

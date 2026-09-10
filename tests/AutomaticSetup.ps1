@@ -1,4 +1,5 @@
 $ErrorActionPreference='Stop'
+. (Join-Path $PSScriptRoot 'TestHost.ps1')
 $root=Split-Path $PSScriptRoot -Parent
 Import-Module (Join-Path $root 'scripts\AutomaticSetup.psm1') -Force
 $cfg=Get-Content -LiteralPath (Join-Path $root 'config\config.example.json') -Raw | ConvertFrom-Json
@@ -7,6 +8,7 @@ $inv=[pscustomobject]@{EndpointError=$null;Endpoints=@('CABLE Input','CABLE Outp
 $plan=Get-AutomaticRoutePlan $inv $cfg
 if ($plan.status -ne 'ReadyForAgentApplication' -or $plan.actions.Count -ne 5 -or $plan.applied) { throw 'Valid independent route plan not produced honestly' }
 if ($plan.selected.returnRecording -ne 'Hi-Fi Cable Output' -or $plan.selected.outboundRecording -ne 'CABLE Output') { throw 'Send/return were reversed' }
+if ($plan.actions[1].surface -ne 'Windows Volume mixer' -or $plan.actions[1].action -notmatch 'Test Voice App' -or $plan.actions[1].action -notmatch 'Preserve the system default') { throw 'Direct output route lost app isolation or system-default preservation' }
 $inv.Endpoints+= [pscustomobject]@{FriendlyName='CABLE Input';Status='OK'}
 if ((Get-AutomaticRoutePlan $inv $cfg).status -ne 'NeedsPreparation') { throw 'Ambiguous endpoint auto-selected' }
 $inv.Endpoints=@()

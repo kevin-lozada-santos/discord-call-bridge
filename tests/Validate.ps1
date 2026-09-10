@@ -1,4 +1,5 @@
 $ErrorActionPreference='Stop'
+. (Join-Path $PSScriptRoot 'TestHost.ps1')
 $root=Split-Path $PSScriptRoot -Parent
 Import-Module (Join-Path $root 'scripts\Bridge.psm1') -Force
 $failures=@()
@@ -17,8 +18,8 @@ foreach ($entry in @(@('Bootstrap.ps1','-Mode','Prepare'),@('InstallDriver.ps1')
     if (-not $blocked) { throw "Unacknowledged entry point allowed: $($entry[0])" }
 }
 $cfg=Get-Content -LiteralPath (Join-Path $root 'config\config.example.json') -Raw | ConvertFrom-Json
-$empty=[pscustomobject]@{WindowsBuild=22631;ObsPresent=$false;DiscordPresent=$false;Endpoints=@();EndpointError=$null}
-if (@(Get-BridgePlan $empty).Count -lt 5) { throw 'Missing dependencies not surfaced' }
+$empty=[pscustomobject]@{WindowsBuild=19045;DiscordPresent=$false;Endpoints=@();EndpointError=$null}
+if (@(Get-BridgePlan $empty).Count -lt 4) { throw 'Missing dependencies not surfaced' }
 $empty.EndpointError='denied'
 if (-not ((Get-BridgePlan $empty) -match 'unknown')) { throw 'Enumeration failure treated as absence' }
 if (@(Test-BridgeConfig $cfg $empty).Count -ne 5) { throw 'Unset configuration accepted' }

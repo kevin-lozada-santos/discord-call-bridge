@@ -1,61 +1,37 @@
-# Windows setup and fault isolation
+# Direct Windows audio routing
 
-Use a separate Discord account dedicated to ChatGPT/Codex. Do not use your personal or main Discord account for this bridge. Set up and sign in to the dedicated account before continuing.
+Recommend Windows 11 or newer, without enforcing a version minimum. Require compatible x64 Windows, Discord, working supported Voice, two independent virtual cable pairs and headphones. Verify actual compatibility on the host. Confirm the dedicated Discord account is currently in use. Preserve live unrelated audio activity.
 
-Explicitly confirm that the dedicated account is currently signed in and in use before setup, testing, or dialing. Do not treat reading the warning, a stored recipient, old acceptance report, or prior user permissions as this confirmation. The wizard requires a fresh acknowledgement each session. If using the skill directly, obtain this explicit confirmation before proceeding; do not switch accounts or handle credentials on the user's behalf. Ending a call or restoring existing settings must remain possible without this prerequisite.
+Recommend Full Access in Codex for trusted installation; it is optional and does not supply app-control approvals or administrator rights. Restore normal permissions afterward. Only verified vendor installers request UAC. Read [host checks](host-preflight.md) before setup.
 
-The following is a reference design, not a required workflow. Use Detect or another supported inventory method when helpful. Other supported isolated routing designs are allowed. Windows 10 build 19041+ or Windows 11 and OBS 28+ are required for the application-capture design. This release targets Windows x64. Other architectures and individual app/capture combinations need separate qualification. A detected device or configured name does not establish working audio.
+## Dependencies
 
-## Installation and cost boundaries
+Reuse installed Discord and compatible cables. The optional app helper installs only Discord.Discord using WinGet; if unavailable, use the official Discord installer. No package manager is installed automatically. Vendor ZIPs are downloaded from official sources and publisher signatures checked before execution. No binaries, licenses or credentials are bundled.
 
-Reuse existing OBS, Discord and compatible independent cables. Enter nonstandard executable locations in the local config before installing duplicates. The wizard's app button invokes WinGet exact package IDs OBSProject.OBSStudio and Discord.Discord from the winget source, with vendor installers and manifest hash checks. Review the displayed package agreements and UAC. If WinGet is absent, consider Microsoft's App Installer or another supported official installation method; WinGet is not a task prerequisite. Install/sign into the current Codex desktop app through its official distribution; account Voice availability is verified in-app, not inferred from CLI presence.
+VB-CABLE is donationware. Hi-Fi Cable is a legacy vendor option: a valid signature is not Windows 11 compatibility evidence. Review vendor suitability and licensing before choosing it, or use an existing compatible independent cable. Additional A/B or C/D cable packages have separate licensing/purchase terms; do not purchase automatically. See [vendor information](https://vb-audio.com/Cable/).
 
-The driver helper downloads official VB-Audio ZIPs into local application data, extracts, checks Authenticode status and expected publisher, and launches only the identified installer visibly with RunAs. Complete the visible vendor window; durable Pending status is not installation proof. Endpoint presence is checked after completion and again with Detect after restart. It does not elevate Codex. If a legacy certificate/package fails verification, nothing is elevated: obtain and verify a supported vendor package using available tools, with a user handoff only for a real unresolved decision. Do not disable signature checks. After the vendor-required restart, reopen Setup.cmd and Detect; saved configuration survives. There is no automatic restart, persistent service or startup task.
+## Preserve and apply
 
-VB-CABLE is donationware. Hi-Fi Cable's vendor page describes free end-user use/donationware but lists an older Windows package; compatibility on a fresh current machine is not guaranteed. Additional VB-CABLE A/B or C/D packages and distribution/commercial use have separate vendor licensing terms. The agent can research, select and prepare compatible alternatives within scope; user-only purchases or unresolved license choices need the user. No licenses or drivers are bundled. OBS is GPL software; Discord is proprietary. Codex/Voice account access and usage limits are separate. The plugin makes no paid API calls and includes no API key.
+Record original Discord and Voice devices, input mode/processing, Windows app routes/defaults, volume/mute and Listen settings before changes. Save a restore sheet or equivalent record; preferences in JSON do not apply app settings.
 
-## Save and configure
-
-Before changes, preserve previous settings using the optional sheet or another suitable local record. Never change a live call, stream or recording. Use OBS Profile > New and Scene Collection > New, both named Discord Call Bridge. These are supported UI operations: if native control is available, the agent may perform them through the observed documented UI. The wizard does not write undocumented OBS/Discord internal configuration files. If native control fails, investigate other supported controls or routing designs before handing off unavailable actions. The Configure page keeps this reference visible; it does not require manual execution.
-
-| Application | Reference route |
+| Setting | Direct route |
 |---|---|
-| OBS global audio | Disable Desktop Audio and Mic/Aux in the dedicated profile |
-| OBS source | Application Audio Capture of ONLY the Voice-producing application; name Voice Bridge Audio |
-| OBS monitoring device | Outbound cable playback endpoint, typically CABLE Input |
-| OBS monitoring | Enable monitoring to that endpoint. Older UI: Monitor Only (mute output). OBS 32.2+ changed to independent mute/monitor controls; inspect current controls and actual signal |
-| OBS source | Ensure source active and not inadvertently muted; check meter and monitoring |
-| Discord microphone | Outbound cable recording endpoint, typically CABLE Output |
-| Discord playback | Independent return cable playback endpoint, typically Hi-Fi Cable Input |
-| Voice microphone | Return cable recording endpoint, typically Hi-Fi Cable Output |
-| Local listening | Headphones only; optional Windows Listen on return recording device to explicit headphones, never either cable |
+| Voice app output | Outbound playback endpoint, typically CABLE Input |
+| Discord input | Outbound recording endpoint, typically CABLE Output |
+| Discord output | Independent return playback endpoint |
+| Voice input | Independent return recording endpoint |
 
-Windows Sound > More sound settings > Playback/Recording > each Hi-Fi endpoint > Properties > Advanced: match the sample rate on both sides (e.g. 48000 Hz). Verify matching formats for the chosen route and apps; do not assume configuration JSON applies Windows settings. If Voice cannot choose an input, use its supported device selection or an in-scope supported Windows input change with original default recorded and unrelated active audio preserved. If neither is supported, two-way operation is blocked.
+Use an in-app output selector or Windows Settings > System > Sound > Volume mixer > Apps to select the Voice app's output. The app may need to play audio before appearing. Preserve the system default. Read back the actual selections. Do not capture all desktop audio or mix physical microphones, Discord returns or unrelated tabs into outbound. If the app cannot isolate Voice or honor its selected devices, stop and diagnose that specific constraint.
 
-The cable's Input is a Windows playback endpoint and Output is its recording endpoint. Never return Discord playback to the outbound cable or capture Discord with the outbound source. Never use outbound recording as Voice input. A browser process can contain multiple tabs: isolate Voice from Discord and unrelated audio. No recording, streaming, Virtual Camera or ASIO Bridge process is required for the basic cable route.
+Never use the outbound recording endpoint as Voice input. Never send Discord playback to the outbound cable. Optional Windows Listen must target explicit headphones, never either cable. Match playback and recording sample rates for each cable according to vendor guidance, such as 48000 Hz where supported. Do not infer Windows settings from a saved plan.
 
-Start/reuse actual Voice through its supported control. Labels and availability vary; do not promise a Start Voice button exists. Dictate is not live Voice. If the preferred control is absent, investigate supported alternatives; hand off only activation or settings that remain inaccessible. Do not substitute paid API voice.
+## Verify and troubleshoot
 
-## Test and repair
+1. Start/reuse actual supported Voice; verify listening, speaking and playback. Dictate is not Voice.
+2. Play a short nonsensitive phrase. Use Discord mic testing with test playback on headphones to verify intelligibility without feeding Voice. Stop the test and restore the separate return output afterward.
+3. Check silence, unrelated sound exclusion and no echo. Meters alone cannot prove speech quality.
+4. Only for an explicitly requested call, verify the recipient and connection, then remote hearing and a fresh inbound phrase followed by an appropriate spoken reply.
 
-1. Play a short nonsensitive Voice phrase. Confirm actual source playback, OBS source meter and return to silence.
-2. Confirm monitoring enabled and source unmuted. A muted source caused a startup failure in the reference setup; unmuting fixed that setup but is not proof of this machine's state.
-3. Run Discord Voice & Video > Mic Test / Let's Check. Temporarily direct mic-test playback to headphones if the return route would feed Voice; record and restore the output afterward. Hear intelligible speech; meters alone are insufficient. Stop Testing before calling (mic test can mute/deafen channel communication).
-4. Ensure silence/unrelated audio is not forwarded. Mute immediately if echo occurs. Check broad capture, duplicate direct/OBS feeds, shared browser audio, Windows Listen, and cable self-capture before gain/processing changes.
-5. Restore return routing, select Voice input, then make only the requested call. Confirm remote hearing and fresh inbound speech as separate stages.
+If speech is silent, inspect actual app output, cable pair, app volume/mute and Discord input. If the app ignores a device change, restart that idle app when in scope and read back settings. For echo, mute outbound first and check crossed devices, shared app audio and Windows Listen. Preserve prior values while adjusting sensitivity or processing. Do not reset all settings or remove shared drivers.
 
-If Voice plays but OBS does not respond, verify capture window/process and app mixer volume. If OBS responds but Discord is silent, check source mute, monitor enable/device and paired Discord microphone. After driver changes, restart affected idle apps when useful and in scope; a Windows reboot remains the user's choice. For clipping/cut-off speech, test Discord sensitivity/noise processing one setting at a time and preserve previous values.
-
-If application capture is incompatible, supported Windows app-specific Volume Mixer routing may send Voice directly to the outbound playback cable. Explain this OBS-free alternative and use only one outbound feed. Keep return audio isolated. Do not reset all settings or remove existing drivers as a troubleshooting shortcut.
-
-## Sources checked during packaging
-
-- https://obsproject.com/kb/application-audio-capture-guide
-- https://github.com/obsproject/obs-studio/releases/tag/32.2.1 (monitoring UI changes)
-- https://vb-audio.com/Cable/ (both cables, installation, sample rates and terms)
-- https://support.discord.com/hc/en-us/articles/360020641332-Mic-Testing
-- https://developers.openai.com/plugins/build/plugins (plugin packaging)
-
-Documentation describes design and prerequisites; only local/remote acceptance establishes actual audio behavior.
-
-For host-specific failures, consult [host troubleshooting](host-preflight.md), including the Windows 10 screenshot-based Computer Use substitute and private-repository access recovery.
+After installation, complete the visible vendor prompts and user-approved restart, then detect both endpoints again. Avoid duplicate pending installers. Installer exit zero and device presence are not audio tests. Local tests do not prove remote hearing or inbound conversation.

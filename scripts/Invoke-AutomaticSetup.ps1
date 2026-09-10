@@ -5,6 +5,7 @@ $ErrorActionPreference='Stop'
 Import-Module (Join-Path $PSScriptRoot 'Bridge.psm1') -Force
 Import-Module (Join-Path $PSScriptRoot 'AutomaticSetup.psm1') -Force
 Assert-DedicatedAccount $DedicatedAccountConfirmed.IsPresent
+Write-Output (Get-BridgeInstallationAdvice)
 $root=Split-Path $PSScriptRoot -Parent
 $null=Initialize-BridgeState $root $StateDir
 $configPath=Join-Path $StateDir 'config.json'
@@ -15,7 +16,7 @@ if ($VoiceApplication) {
 }
 $inventory=Get-BridgeInventory -ConfigPath $configPath
 if ($InstallMissing) {
-    if (-not $inventory.ObsPresent -or -not $inventory.DiscordPresent) {
+    if (-not $inventory.DiscordPresent) {
         & (Join-Path $PSScriptRoot 'Bootstrap.ps1') -Mode InstallApps -DedicatedAccountConfirmed -StateDir $StateDir
     }
     foreach ($driver in @('VBCable','HiFiCable')) {

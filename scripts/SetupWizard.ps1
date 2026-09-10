@@ -40,7 +40,7 @@ $accountCheck.Text='I confirm I am signed in to a separate Discord account dedic
 $accountCheck.SetBounds(15,150,830,50)
 $accountPage.Controls.Add($accountCheck)
 $null=Add-Text $accountPage 'Setup stays locked until you confirm the dedicated account is in use. This confirmation applies to this wizard session only. This wizard does not create accounts, switch accounts, or inspect credentials. Close it if you need to set up the account first. After confirming, use any relevant page; the agent can perform setup without following these tabs.' 220 110
-$null=Add-Text $accountPage 'Prefer agent-led setup: ask Codex to act as your setup wizard and technical expert, choose supported methods, configure and troubleshoot, and verify the result. These pages and scripts are optional aids. Only the dedicated-account acknowledgement and actual user-controlled boundaries require your action.' 350 120
+$null=Add-Text $accountPage 'Prefer agent-led setup: ask Codex to act as your setup wizard and technical expert, choose supported methods, configure and troubleshoot, and verify the result. These pages and scripts are optional aids. Windows 11 or newer is recommended. Dedicated-account acknowledgement and actual user-controlled boundaries require your action.' 350 120
 $tabs.Add_Selecting({ param($sender,$eventArgs)
     if ($eventArgs.TabPage -ne $accountPage -and -not $accountCheck.Checked) { $eventArgs.Cancel=$true }
 })
@@ -68,8 +68,8 @@ $inventoryBox=Add-Text $pages['1 Detect'] 'Click Detect to inspect installed app
 $null=Add-Button $pages['1 Detect'] 'Detect / refresh (read-only)' 95 {
     try { $script:inventory=Get-BridgeInventory; $inventoryBox.Text=([pscustomobject]@{Inventory=$script:inventory;HostPreflight='Before installation: can the host capture and control native apps, or provide a working screenshot-based Computer Use substitute? Can you start actual Voice and select its input? If unavailable, investigate other supported methods and complete independent setup; hand off only the specific inaccessible action. Software presence does not prove control capability.';Next=@(Get-BridgePlan $script:inventory)} | ConvertTo-Json -Depth 8) } catch { Show-Failure $_ }
 }
-$null=Add-Text $pages['2 Install'] 'Reuse existing software. If Detect missed a custom install, enter its executable path in config.json before installing. App installs use WinGet official vendor packages with hash checks. Driver buttons download signed vendor packages and request UAC only for the installer. Review vendor terms first. After any required reboot, reopen this wizard and Detect again.' 15 105
-$null=Add-Button $pages['2 Install'] 'Install missing OBS / Discord apps' 140 { Run-Helper 'Bootstrap.ps1' '-Mode InstallApps' }
+$null=Add-Text $pages['2 Install'] 'Windows 11 or newer is recommended. Full Access in Codex is recommended for installation; it is optional and does not grant app-control approval or administrator rights. Restore your usual permissions afterward. Reuse existing software. If Detect missed a custom install, enter its executable path in config.json before installing. App installs use WinGet official vendor packages with hash checks. Driver buttons download signed vendor packages and request UAC only for the installer. Review vendor terms first. After any required reboot, reopen this wizard and Detect again.' 15 105
+$null=Add-Button $pages['2 Install'] 'Install missing Discord app' 140 { Run-Helper 'Bootstrap.ps1' '-Mode InstallApps' }
 $null=Add-Button $pages['2 Install'] 'Install outbound VB-CABLE (UAC)' 185 { Run-Helper 'InstallDriver.ps1' '-Driver VBCable' }
 $null=Add-Button $pages['2 Install'] 'Install return Hi-Fi Cable (UAC)' 230 {
     if ([Windows.Forms.MessageBox]::Show('Hi-Fi Cable is an older vendor package. Confirm vendor compatibility and terms for this machine. Existing compatible independent cables can be used instead. Continue?','Review driver','YesNo') -eq 'Yes') { Run-Helper 'InstallDriver.ps1' '-Driver HiFiCable' }
@@ -102,7 +102,7 @@ $null=Add-Button $pages['3 Configure'] 'Edit device preferences / custom app pat
 }
 $routing=Get-Content -LiteralPath (Join-Path $root 'skills\discord-call\references\windows-routing.md') -Raw
 $null=Add-Text $pages['3 Configure'] $routing 290 295
-$verifyBox=Add-Text $pages['4 Verify'] 'Refresh configured endpoint checks, then complete the acceptance stages below. Checks cannot verify actual OBS/Discord settings or sound.' 65 180
+$verifyBox=Add-Text $pages['4 Verify'] 'Refresh configured endpoint checks, then complete the acceptance stages below. Checks cannot verify actual Windows/Discord/Voice settings or sound.' 65 180
 $null=Add-Button $pages['4 Verify'] 'Check configuration against devices' 15 {
     try {
         $cfg=Get-Content -LiteralPath (Join-Path $stateDir 'config.json') -Raw | ConvertFrom-Json

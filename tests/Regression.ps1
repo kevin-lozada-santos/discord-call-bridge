@@ -1,4 +1,5 @@
 $ErrorActionPreference='Stop'
+. (Join-Path $PSScriptRoot 'TestHost.ps1')
 $root=Split-Path $PSScriptRoot -Parent
 $scratch=Join-Path ([IO.Path]::GetTempPath()) ('bridge-regression-'+[guid]::NewGuid().ToString('N'))
 New-Item -ItemType Directory -Path $scratch | Out-Null

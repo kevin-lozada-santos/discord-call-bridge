@@ -1,53 +1,18 @@
-# First-machine validation - 2026-09-10
+# Validation
 
-This report covers packaging and safe local tests, not installation or audio acceptance on a second machine.
+This release recommends Windows 11 or newer without enforcing a version minimum, and uses direct per-app audio routing. Full Access in Codex is recommended for trusted installation, not required or enabled by the plugin. App-control approvals and vendor UAC remain separate.
 
-Verified:
+## Automated package checks
 
-- Official plugin manifest validator and skill frontmatter validator pass.
-- PowerShell 5.1 parses all helper scripts; behavioral fixture tests cover missing/unknown dependencies, unset recipient/devices, independent cables, feedback rejection and preservation of local configuration across repeated Prepare runs.
-- Plugin registration/copy runs against an isolated profile path containing spaces. Existing marketplace name, display metadata and unrelated entry are preserved; retry from destination does not duplicate the entry.
-- Driver and plugin WhatIf modes perform no installations. Fault injection verifies a cancelled UAC launch is reported as incomplete and an unsigned installer is refused before elevation. These are simulated failures; no real UAC prompt was invoked.
-- Both official vendor ZIPs were actually downloaded and extracted in DownloadOnly mode. The selected executable signatures were Valid: current VB-CABLE publisher BUREL VINCENT Entrepreneur individuel and legacy Hi-Fi publisher Vincent Burel. No vendor binary is in this release; no installer was launched.
-- Windows Forms controls are constructed and all five pages selected in the smoke test. Offscreen rendering was used for visual inspection of the wizard, without invoking install/audio actions. This is limited local UI validation, not a fresh-machine interactive acceptance pass.
-- Read-only inventory detects existing source-machine OBS/Discord and endpoints. Endpoint-name variants such as Speakers are recognized without treating other virtual microphones as cables. No audio settings were modified.
+- Validate.ps1: script parsing, dedicated-account gates, missing/unknown dependencies, independent routes, feedback rejection, state preservation, isolated marketplace registration, installer signature/cancellation fixtures and wizard construction.
+- Regression.ps1: safe repeated extracted-package updates, scoped backups, visible vendor installer handoff/status and running Discord detection.
+- AutomaticSetup.ps1: independent endpoint selection, ambiguity and missing-device refusal, pending-plan persistence and resume without claiming application.
+- Manifest and skill validators; source-only release ZIP integrity and private-data checks.
 
-Not run here:
+Tests use an explicit Windows 10 fixture to check that setup is not blocked solely by OS version. No test approves UAC, installs a driver, changes live app audio or places a call. Wizard SmokeTest constructs controls only. There is no Windows version gate.
 
-- Actual dependency install, UAC approval/cancellation, driver restart/resume, or uninstall on a new machine.
-- Plugin activation/new-task pickup on the source machine (deliberately avoided to protect the existing call skill).
-- Second-machine Voice availability/native automation capability, audio route configuration, local intelligibility, remote hearing, inbound speech or hang-up.
+## Runtime evidence limits
 
-Use tests/Validate.ps1 for safe fixture checks. Use the acceptance checklist for the actual trial. Wizard checkboxes record user attestation; neither checked boxes nor exit code alone establish measured signal flow. A downloaded/installed dependency is not proof of two-way calling.
+Windows 11 end-to-end installation, native control, direct audio routing, local intelligibility, remote hearing and inbound conversation have not been verified for this update. Earlier host trials established that package/driver success does not establish screenshot-control or working audio. No prior trial is treated as acceptance of the new supported route.
 
-## Version 0.1.1 account prerequisite update
-
-- Required initial wizard page uses an unchecked confirmation that the dedicated Discord account is currently in use. No saved configuration or old acceptance record unlocks it.
-- Native Windows Forms smoke test attempts every setup tab before acknowledgement and confirms navigation is blocked. It then confirms acknowledgement unlocks Configure and revocation relocks it. The test shows the form offscreen only and invokes no installer/audio actions.
-- Bootstrap Prepare, driver installer and plugin installer are invoked without acknowledgement and verified to stop before mutation. Existing positive-path fixture tests now supply explicit test confirmation. Audit remains read-only with the warning.
-- CLI flags are attestations, not account identity verification. The skill separately requires user confirmation before setup/testing/dialing. No account creation, switching, login inspection or credential handling was added.
-- ZIP content and a downloaded private release are revalidated for this update. Actual Discord account state and second-machine audio remain untested.
-
-## Version 0.1.2 email-report fixes
-
-Source report: email subject "Discord Call Bridge: blockers to a one-click install and call", September 10, 2026, 4:16 AM. The report describes a Windows 10 build 19045 x64 trial; its account/participant details and full private message are not bundled.
-
-Regression.ps1 first failed on three observed package contracts: repeated extracted-package install refused an existing folder; driver launch requested Hidden rather than a visible UI; inventory ignored the running Discord executable. The same regression test passes after the fixes. Installer execution remains mocked: it proves visible RunAs arguments, progress semantics and endpoint classification, not an actual UAC or driver installation.
-
-Updates now stage source and preserve scoped prior-source backups and marketplace entries. Running Discord executable paths take priority over inactive folders (explicit user path still wins). Driver progress is persisted across restarts, visible interactive installation is requested, and both enabled endpoints are checked separately from process exit. Existing account gate, cancellation/signature refusal, isolated profile fixtures and wizard smoke tests remain required.
-
-Native capture error on Windows 10 (`SetIsBorderRequired`, 0x80004002) was reported by email, not reproduced on this packaging machine. The new capability-discovered screenshot-based Computer Use fallback is guidance for supported hosts, not an implementation or verification of a new capture runtime. Voice activation and second-machine two-way audio remain unverified. No calls, account changes or audio mutations are performed by these tests.
-
-## Version 0.1.3 execution contract
-
-The skill now explicitly defaults setup/repair requests to Codex execution, links concrete helper commands in dependency order, separates native UI failure from independent shell work, and limits handoffs to the precise missing capability or user-only action. Manual review covers: missing cable pairs with shell available; no native screenshot capability; unavailable Voice activation; audit-only scope; absent dedicated-account confirmation. Expected decisions are respectively helper execution, continued independent preparation with narrow UI blocker, attempt supported activation then narrow handoff, no mutation, and explicit account confirmation before setup.
-
-The automatic setup runner now orchestrates dependency helpers, respects configured alternative pairs, selects eligible independent endpoints and persists route preferences plus an explicit pending-application plan. AutomaticSetup.ps1 tests send/return selection, missing/ambiguous endpoint refusal, account gating, isolated temporary-state persistence and repeat-run resume without fabricating app application. Existing manifest/skill validation, package regression checks and wizard smoke tests remain required.
-
-This adds executable preparation and device selection plus an agent execution contract, not a new desktop-control implementation. Actual OBS/Discord/Voice routing still requires Codex to operate supported controls and verify settings. No live agent setup trial, driver installation, Windows 10 screenshot fallback or two-way call is claimed by this update.
-
-## Version 0.1.4 agent-led expert behavior
-
-The primary skill, manifest prompt, README onboarding and actual wizard copy now assign Codex the setup-wizard/technical-expert role. Helpers, page order, reference routes and preferred control paths are advisory; the agent may diagnose, adapt or replace them using other supported methods. Account acknowledgement, scope, real system boundaries, audio isolation and truthful hearing/inbound evidence remain requirements.
-
-Manual contract review covers: missing WinGet (choose official supported alternatives); missing OBS (consider a supported isolated direct route); failed native screenshot capture (discover other supported control methods); helper/config mismatch (diagnose and adapt); UAC or sign-in (exact user-only handoff); setup-only request (no dialing); no account confirmation (retain the explicit user prerequisite); successful config write (no audio-success claim). This is review of the instruction contract, not a live agent behavioral evaluation. Existing fixture suites, manifest/skill validation and wizard smoke checks validate package consistency. No current-host routing, accounts or drivers were changed.
+Use the acceptance checklist for a fresh supported-host trial. Preserve previous source/settings for restoration, and record every audio stage separately.

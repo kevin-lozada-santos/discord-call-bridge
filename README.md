@@ -1,78 +1,62 @@
 # Discord Call Bridge
 
-Use a separate Discord account dedicated to ChatGPT/Codex. Do not use your personal or main Discord account for this bridge. Set up and sign in to the dedicated account before continuing.
+Agent-led setup for direct, isolated two-way Discord Voice audio on Windows, x64. **Windows 11 or newer is recommended**, not enforced. On other Windows versions, verify app, driver and control compatibility before proceeding. Windows PowerShell 5.1, Discord, actual supported Voice, two independent virtual cable pairs and headphones are required. App and device detection alone never proves working audio.
 
-Explicitly confirm that the dedicated account is currently signed in and in use before setup, testing, or dialing. Do not treat reading the warning, a stored recipient, old acceptance report, or prior user permissions as this confirmation. The wizard requires a fresh acknowledgement each session. If using the skill directly, obtain this explicit confirmation before proceeding; do not switch accounts or handle credentials on the user's behalf. Ending a call or restoring existing settings must remain possible without this prerequisite.
+Use a separate Discord account dedicated to ChatGPT/Codex. Sign in yourself and explicitly confirm that this account is currently in use before setup, testing or dialing. The agent reuses that confirmation within the task; each new wizard session requires its own acknowledgement. No credentials or account switching are handled by the plugin.
 
-A portable Codex plugin and Windows setup wizard for routing assistant Voice into Discord and caller audio back into Voice. Version 0.1.4 is a private second-machine trial, not a universal or unattended calling product.
+## Installation permissions
 
-## Start with agent-led setup
+**Recommend Full Access in Codex for installation of this trusted plugin.** This allows downloads, local plugin registration and installer launches that restricted sessions may block. It is a recommendation, not a prerequisite: approved scoped permissions can also work. Full Access broadens file/network access; return to your usual permissions afterward. The plugin never changes permission settings automatically.
 
-Ask Codex: "Act as my setup wizard and technical expert. Set up and troubleshoot Discord Call Bridge using the supported methods you judge appropriate; apply and verify the routes yourself. Treat bundled scripts and recipes as advice, and ask me only for actual user-controlled steps." Confirm the dedicated account when requested. A setup request does not authorize a call.
+Full Access does not grant Computer Use approval for individual apps or Windows administrator privileges. Keep Codex running normally. Approve ordinary Windows UAC only for a verified vendor installer; handle license decisions and restarts yourself. No automatic purchases, accepted license terms, elevated agent process or unrequested reboot.
 
-The agent owns diagnosis and execution. Scripts, wizard pages, tool sequences and reference routes are optional aids; an unavailable preferred method is a reason to adapt, not to return a manual checklist. The account requirement and actual OS/credential/consent boundaries remain requirements.
+## Agent-led setup
 
-## Optional interactive wizard on the second Windows machine
+Ask Codex: "Set up and verify Discord Call Bridge using direct Windows app audio routing." The agent owns discovery, installation, configuration, diagnosis and verification, handing off only unavailable controls or actual user-only actions. Setup does not authorize contacting anyone.
 
-1. Download the release ZIP while signed into the private GitHub repository. Verify its SHA-256 against the release checksum file. Extract all files into a normal user folder. Do not run inside the ZIP.
-2. Review the scripts, then double-click **Setup.cmd**. It launches the Windows Forms wizard using Windows PowerShell 5.1 and a process-only script execution setting. It does not change machine execution policy or run Codex as administrator. If organizational policy blocks scripts, use the approved administrator process; do not bypass it.
-3. **Dedicated account** blocks navigation until you confirm the dedicated account is in use. **Detect** is read-only. **Install** offers missing OBS/Discord apps, verified vendor cable installers, Codex account/download guidance, and plugin installation. Approve vendor/UI/UAC steps yourself. Restart only when ready, reopen Setup.cmd and Detect again. Settings persist locally.
-4. **Configure** saves your recipient and device preferences plus a previous-settings restore sheet. The guide walks through dedicated OBS setup and separate send/return routes. The skill can operate available supported native UI; when unavailable, the wizard gives manual app steps. Audio is not automatically configured by editing the preferences file.
-5. **Verify** checks configured endpoint names, then tracks the real two-way call stages. **Finish / Restore** writes a local user-attested acceptance report and explains restoration/uninstall.
+The route is:
 
-The wizard automates supported software acquisition, narrowly scoped driver elevation and plugin registration/installation. When Codex runs setup, it also operates available supported app controls for audio routing and Voice activation. Account login, secure-desktop UAC, unresolved driver compatibility choices and controls actually unavailable to Codex need narrow user handoffs. It does not claim to fully automate every host.
+| Source | Destination |
+|---|---|
+| Voice app playback | Outbound cable playback endpoint, typically CABLE Input |
+| Outbound cable recording endpoint | Discord microphone, typically CABLE Output |
+| Discord playback | Separate return cable playback endpoint |
+| Return cable recording endpoint | Voice microphone |
 
-## Requirements and installation details
+Use the Voice app's output selector or Windows Settings > System > Sound > Volume mixer to select only that app's output. Preserve the system default. Keep unrelated audio out of the Voice app; a browser with unrelated audible tabs is unsuitable. Never select the outbound cable as Voice input. See [routing](skills/discord-call/references/windows-routing.md).
 
-The bundled helpers/reference design target Windows x64, Windows PowerShell 5.1, Windows 10 build 19041+ or Windows 11, OBS 28+, Discord, and a Codex/ChatGPT environment with working Voice and plugin support, using two independent cable pairs and headphones. These are reference-design requirements, not unconditional blockers for other supported, verified routing solutions. Read [routing and dependency terms](skills/discord-call/references/windows-routing.md), including the older Hi-Fi driver compatibility limitation. No vendor binaries, credentials, licenses, private logs or API keys are included. No paid API voice is substituted.
+## Portable setup wizard
 
-Python, Node, Git and GitHub CLI are not required to use the ZIP. WinGet is needed only for the app-install button; if missing use Microsoft's App Installer from Microsoft Store or the official OBS/Discord installers. Existing custom install paths can be entered in the local config before running InstallApps.
+Download the source ZIP from the private release using your authorized account, verify its SHA-256 and extract all files into a normal user folder. Run **Setup.cmd**. Windows 11 or newer is recommended; the wizard does not block earlier Windows versions. Its pages provide account acknowledgement, read-only detection, dependency installation, route preferences, acceptance evidence and restoration guidance. The agent can perform supported steps directly without following the tabs.
 
-The plugin installer copies to `%USERPROFILE%\plugins\discord-call-bridge`, appends a personal marketplace entry preserving unrelated entries, and runs `codex plugin add discord-call-bridge@<actual marketplace name>`. Updates stage the new source and automatically preserve the previous source in a scoped backup under `%USERPROFILE%\plugins\discord-call-bridge-backups`; marketplace identity is validated before replacement. Junction/link destinations are refused. Registration backups are adjacent to the marketplace file. The standard personal marketplace is implicitly discovered; no marketplace-add command is needed. If CLI is unavailable, registration remains available for the Codex plugin browser. Start a **new Codex task** after installation and request `$discord-call` setup or test; verify it actually loads the plugin skill.
+Reuse installed Discord and compatible independent cables. WinGet is only required by the optional missing-Discord helper; otherwise use Discord's official installer. Hi-Fi Cable is an older vendor package: its signature does not establish Windows 11 compatibility. Verify suitability before choosing it for the return path; do not install it automatically without that review. Alternative cables may have separate purchase/license requirements.
 
-Current commands were checked with local Codex CLI 0.153.4 using `plugin add --help` and `plugin remove --help`. Official [plugin packaging documentation](https://developers.openai.com/plugins/build/plugins) supplies the manifest/marketplace conventions. Runtime plugin installation on the second host still needs validation.
+## Command-line helpers
 
-## Command-line fallback
-
-From the extracted folder in ordinary PowerShell. For every mutating entry point, `-DedicatedAccountConfirmed` explicitly asserts that you are already signed in to the dedicated account; omit it and the command stops before making changes. Never pass it automatically without that user confirmation:
+From the extracted folder in ordinary PowerShell:
 
 ```powershell
-.\scripts\Bootstrap.ps1                         # read-only audit
-.\scripts\Invoke-AutomaticSetup.ps1 -DedicatedAccountConfirmed -InstallMissing -VoiceApplication 'actual observed Voice app' # Codex setup runner
-.\scripts\Bootstrap.ps1 -Mode Prepare -DedicatedAccountConfirmed           # local templates only
-.\scripts\Bootstrap.ps1 -Mode InstallApps -DedicatedAccountConfirmed       # missing OBS / Discord
-.\scripts\InstallDriver.ps1 -Driver VBCable -DedicatedAccountConfirmed -WhatIf
-.\scripts\InstallDriver.ps1 -Driver VBCable -DedicatedAccountConfirmed     # download, signature, UAC
-.\scripts\InstallDriver.ps1 -Driver HiFiCable -DedicatedAccountConfirmed   # review compatibility first
+.\scripts\Bootstrap.ps1 -Mode Audit
+.\scripts\Bootstrap.ps1 -Mode Prepare -DedicatedAccountConfirmed
+.\scripts\Bootstrap.ps1 -Mode InstallApps -DedicatedAccountConfirmed
+.\scripts\Invoke-AutomaticSetup.ps1 -DedicatedAccountConfirmed -VoiceApplication 'actual Voice app'
+.\scripts\InstallDriver.ps1 -Driver VBCable -DedicatedAccountConfirmed
+.\scripts\InstallDriver.ps1 -Driver HiFiCable -DedicatedAccountConfirmed -DownloadOnly
 .\scripts\InstallPlugin.ps1 -DedicatedAccountConfirmed
 ```
 
-Installer consoles remain visible for vendor prompts and errors. Do not close one mid-install or start duplicate installs. The wizard does not automatically infer an install completed from an opened console; rerun Detect. Driver cancellation, invalid signatures and installer failures leave setup partial. Driver downloads are kept only in local application data and are excluded from the release.
+`-DedicatedAccountConfirmed` asserts the user's current acknowledgement; never supply it from old saved state. Audit is read-only. Setup helpers do not enforce a Windows version minimum; actual dependency and control compatibility must be verified. `-InstallMissing` on the runner may launch missing dependency helpers after vendor suitability review; use existing cables when possible.
 
-Preferences default to no recipient and no selected devices, stored under `%LOCALAPPDATA%\DiscordCallBridge`. Do not copy this private state into a redistributable package. A saved recipient never supplies permission for unsolicited calls or DMs.
+Prepare creates missing templates while preserving local settings. The automatic runner selects unambiguous endpoints and saves a pending plan. `ReadyForAgentApplication` means settings still need to be applied and read back in the actual apps. JSON files never configure Windows or prove sound works.
 
-## Validation and recovery
+The plugin installer copies source under `%USERPROFILE%\plugins\discord-call-bridge`, preserves previous source in a scoped backup, updates the personal marketplace while preserving unrelated entries, then runs `codex plugin add` using the actual marketplace name. `-RegisterOnly` prepares registration without the CLI. Start a new Codex task after installation to load the new skill.
 
-See [VALIDATION.md](VALIDATION.md) for first-machine evidence and [acceptance checklist](skills/discord-call/references/acceptance.md) for the required second-machine trial. Read [RESTORE.md](RESTORE.md) before changing audio. Successful packaging, device detection, local mic-test playback, connected call, remote hearing and inbound speech are separate evidence stages.
+Private configuration, restore sheets and stage receipts live under `%LOCALAPPDATA%\DiscordCallBridge`; none belong in release packages. A stored recipient is a preference, never permission to call or message them.
 
-No public listing, sale, third-party binary redistribution, account permission or commercial compatibility claim is included in this private trial.
+## Verification and recovery
 
-## Updating from earlier versions
+Verify actual Voice playback, intelligible isolated local audio and no echo before an explicitly requested call. Confirm remote hearing and fresh inbound conversation separately. Stop mic testing before dialing. Do not record or stream call audio. Follow [acceptance](skills/discord-call/references/acceptance.md), [host checks](skills/discord-call/references/host-preflight.md) and [restoration](RESTORE.md).
 
-Keep the old ZIP/release for rollback. Run the new extracted package installer; it stages the update and preserves the existing source automatically in a dated scoped backup. No manual rename is required. Keep local device preferences and restore records. The new wizard always starts with the dedicated-account confirmation unchecked, including after reboot. Start a new Codex task after installing the update. Existing personal marketplace entries are preserved.
+Signed installer launch, exit zero and detected endpoints are separate stages; none establish working audio. Finish the vendor's UAC/installer steps, perform any required restart yourself, then resume fresh detection. Do not launch duplicate pending installers.
 
-## Preflight, visible installers and resume
-
-Consult [host troubleshooting and Windows 10 screenshot fallback](skills/discord-call/references/host-preflight.md) for relevant failures. Detect reports executable selection, native-control/Voice unknowns and cable evidence. WinGet is required only when an app is missing; already-installed apps are reused without requiring it. Windows 10 can use an available supported screenshot-based Computer Use interface instead of a failed capture path; otherwise the agent investigates other supported methods before handing off the specific unavailable control.
-
-Driver installers now open visibly after UAC. Their progress records distinguish Downloading, Downloaded, AwaitingUac, Pending, Cancelled, Failed, RestartRequired and DevicesDetected. A launched process or exit code never establishes working audio. Complete or cancel the visible installer; if its window is unusable, inspect that pending process before retrying. The wizard blocks launching a second console for the same helper while its previous console remains open. After any user-approved reboot, reopen Setup.cmd, confirm the dedicated account, use Detect for fresh endpoint evidence, then Finish / Restore > Refresh saved setup progress. Saved timestamps are historical evidence, not current readiness. Close an old helper console only after resolving its installer before retrying.
-
-App/plugin stage records live in `%LOCALAPPDATA%\DiscordCallBridge`; driver records are in its downloads subfolder. Separate per-stage files preserve progress without overwriting other stages. Plugin installation reports InstalledNeedsReload until the user verifies a new task has loaded the skill. Routes, local intelligibility, remote hearing and inbound conversation remain separate user-attested acceptance stages. No saved progress unlocks the account prerequisite or auto-dials.
-
-## Codex must execute requested setup
-
-Ask Codex to "set up and verify this bridge" or "fix the missing dependencies and finish setup". After the required current dedicated-account confirmation, the skill requires Codex to own setup and diagnosis using whichever available supported methods fit, apply and verify the route, and start available Voice controls. Bundled helpers and recipes are optional. It must not stop at a checklist telling you to use the wizard while it can execute those steps itself. For audit-only or verification-only requests, it stays read-only.
-
-Manual steps are limited to actual UAC/credential/license/restart decisions or controls unavailable on the host. A native screenshot failure does not excuse skipping independent shell preparation and installer launch. See [automatic execution workflow](skills/discord-call/references/automatic-execution.md). These instructions improve agent behavior; they do not add a missing Voice engine or native automation runtime.
-
-The executable setup runner reuses detected dependencies, manages missing-dependency helper launches, avoids duplicate pending driver launches, selects unambiguous enabled cable endpoints and saves a concrete send/return route plan. Codex can apply or adapt that plan through supported controls or choose another suitable design, activate Voice when available, and read back settings. Saved preferences and `ReadyForAgentApplication` are explicitly pending app application; neither is proof of configured audio. This version provides automatic device selection and an agent execution workflow, not a standalone app-routing driver.
+This package supplies instructions and helpers, not a Voice engine, device driver, desktop-control runtime or always-on listener. Windows 11 compatibility does not guarantee that every app exposes controls or supports the chosen Voice devices. No paid API voice is substituted.

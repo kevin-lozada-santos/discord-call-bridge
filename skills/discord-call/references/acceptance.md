@@ -1,26 +1,19 @@
-# Second-machine acceptance
+# Acceptance evidence
 
-The checklist suggests evidence for the reference design. Wizard launch, Detect, OBS and particular helper sequences are optional implementation details; mark them not applicable for an equivalent supported design. Preserve the actual account, scope, isolation, intelligibility, remote-hearing and inbound-conversation requirements. Setup-only work does not authorize a test call.
+Record PASS, FAIL or NOT RUN separately for each stage, with time and version. Keep account/recipient details and audio content out of public reports. A wizard checkbox is user attestation, not an automated measurement.
 
-Use a separate Discord account dedicated to ChatGPT/Codex. Do not use your personal or main Discord account for this bridge. Set up and sign in to the dedicated account before continuing.
+- [ ] OS/build recorded, Windows 11+ recommendation explained and actual app/driver/control compatibility checked.
+- [ ] Current dedicated Discord account explicitly acknowledged and plugin loaded in a new task.
+- [ ] Full Access installation recommendation explained, or suitable scoped access available; app-control and installer UAC remain separate.
+- [ ] Discord and two independent compatible cable pairs detected; no duplicate pending installs.
+- [ ] Previous app routes, devices, volume/mute and Listen settings saved.
+- [ ] Voice playback routed directly to outbound cable; Discord input matches its recording endpoint.
+- [ ] Discord playback and Voice input use the independent return pair.
+- [ ] Actual app selections read back; no system-wide capture, physical mic mix, unrelated app/tab sound or feedback.
+- [ ] Actual Voice listening/speaking and intelligible local outbound speech confirmed; mic test stopped.
+- [ ] Explicitly requested recipient verified and Discord connected.
+- [ ] Participant acknowledged hearing assistant speech.
+- [ ] Fresh participant speech reached Voice and an appropriate spoken reply was heard.
+- [ ] Explicit hang-up ended both intended endpoints; previous temporary settings restored.
 
-Explicitly confirm that the dedicated account is currently signed in and in use before setup, testing, or dialing. Do not treat reading the warning, a stored recipient, old acceptance report, or prior user permissions as this confirmation. The wizard requires a fresh acknowledgement each session. If using the skill directly, obtain this explicit confirmation before proceeding; do not switch accounts or handle credentials on the user's behalf. Ending a call or restoring existing settings must remain possible without this prerequisite.
-
-Run on the second machine with a consenting intended call participant. The reference route was user-confirmed two-way on the source machine; this package has NOT been audio-tested on your second machine.
-
-- [ ] Extract ZIP and launch Setup.cmd; the dedicated-account warning and five setup stages appear.
-- [ ] Detect reports usable Windows/OBS/Discord versions and two independent cable pairs. Resolve unknowns; no unneeded duplicate installs.
-- [ ] Missing dependencies installed through vendor flow; UAC cancellation is recoverable; required reboot completed and Detect rerun.
-- [ ] Plugin installed, new Codex task discovers discord-call, recipient explicitly chosen or remains unset. Ask to set up/test; no accidental dialing.
-- [ ] Previous settings saved, dedicated OBS profile/collection created and actual application routes match selected endpoints.
-- [ ] Voice can start and use the return input. Actual speech captured and monitored with source unmuted.
-- [ ] Local Discord mic test intelligible, no unrelated sound/echo, mic test stopped.
-- [ ] Explicit requested destination connected once; participant confirms hearing AI speech.
-- [ ] Participant says a new phrase; Voice receives/transcribes it and gives a relevant spoken answer that participant hears.
-- [ ] Explicit hang-up ends Discord and associated Voice; both states verified.
-- [ ] Reopen wizard after restart and confirm preferences retained; repeated setup preserves prior settings.
-- [ ] Restore returns prior routes and selected OBS profile; shared dependencies remain usable.
-
-Record each stage as PASS, FAIL or NOT RUN with date, versions and user observation. Keep private recipient/account data and conversation content out of public reports. Wizard checkboxes are user attestations, not automated measurements.
-
-- [ ] Before checking the dedicated-account confirmation, attempts to select setup tabs stay blocked. Confirm the dedicated account is signed in, check the box, and verify setup unlocks. Uncheck it and verify setup relocks.
+No packaging test, installer exit, endpoint meter or saved preference substitutes for the audio stages. Restore user-selected permission settings after installation when appropriate. Setup alone never authorizes a call.
