@@ -39,7 +39,8 @@ $accountCheck=New-Object Windows.Forms.CheckBox
 $accountCheck.Text='I confirm I am signed in to a separate Discord account dedicated to ChatGPT/Codex.'
 $accountCheck.SetBounds(15,150,830,50)
 $accountPage.Controls.Add($accountCheck)
-$null=Add-Text $accountPage 'Setup stays locked until you confirm the dedicated account is in use. This confirmation applies to this wizard session only. This wizard does not create accounts, switch accounts, or inspect credentials. Close it if you need to set up the account first. After confirming, select Detect to continue.' 220 110
+$null=Add-Text $accountPage 'Setup stays locked until you confirm the dedicated account is in use. This confirmation applies to this wizard session only. This wizard does not create accounts, switch accounts, or inspect credentials. Close it if you need to set up the account first. After confirming, use any relevant page; the agent can perform setup without following these tabs.' 220 110
+$null=Add-Text $accountPage 'Prefer agent-led setup: ask Codex to act as your setup wizard and technical expert, choose supported methods, configure and troubleshoot, and verify the result. These pages and scripts are optional aids. Only the dedicated-account acknowledgement and actual user-controlled boundaries require your action.' 350 120
 $tabs.Add_Selecting({ param($sender,$eventArgs)
     if ($eventArgs.TabPage -ne $accountPage -and -not $accountCheck.Checked) { $eventArgs.Cancel=$true }
 })
@@ -62,10 +63,10 @@ function Run-Helper($file,$arguments='') {
     $script:helperProcesses[$file]=$proc
     $null=$proc # Visible interactive installer/status console deliberately requested by wizard action.
 }
-$null=Add-Text $pages['1 Detect'] 'Begin on the second Windows machine. No setup action runs until you click it. Do not configure while a call/recording/stream is active. Detect is read-only; presence is not audio proof.' 15
+$null=Add-Text $pages['1 Detect'] 'Optional read-only inventory. Codex can drive setup using supported tools; these buttons are conveniences, not required steps. Do not configure while a call/recording/stream is active. Detect is read-only; presence is not audio proof.' 15
 $inventoryBox=Add-Text $pages['1 Detect'] 'Click Detect to inspect installed apps, versions and audio endpoints.' 135 445
 $null=Add-Button $pages['1 Detect'] 'Detect / refresh (read-only)' 95 {
-    try { $script:inventory=Get-BridgeInventory; $inventoryBox.Text=([pscustomobject]@{Inventory=$script:inventory;HostPreflight='Before installation: can the host capture and control native apps, or provide a working screenshot-based Computer Use substitute? Can you start actual Voice and select its input? If unavailable, use manual setup; software installation cannot supply those capabilities.';Next=@(Get-BridgePlan $script:inventory)} | ConvertTo-Json -Depth 8) } catch { Show-Failure $_ }
+    try { $script:inventory=Get-BridgeInventory; $inventoryBox.Text=([pscustomobject]@{Inventory=$script:inventory;HostPreflight='Before installation: can the host capture and control native apps, or provide a working screenshot-based Computer Use substitute? Can you start actual Voice and select its input? If unavailable, investigate other supported methods and complete independent setup; hand off only the specific inaccessible action. Software presence does not prove control capability.';Next=@(Get-BridgePlan $script:inventory)} | ConvertTo-Json -Depth 8) } catch { Show-Failure $_ }
 }
 $null=Add-Text $pages['2 Install'] 'Reuse existing software. If Detect missed a custom install, enter its executable path in config.json before installing. App installs use WinGet official vendor packages with hash checks. Driver buttons download signed vendor packages and request UAC only for the installer. Review vendor terms first. After any required reboot, reopen this wizard and Detect again.' 15 105
 $null=Add-Button $pages['2 Install'] 'Install missing OBS / Discord apps' 140 { Run-Helper 'Bootstrap.ps1' '-Mode InstallApps' }
@@ -77,7 +78,7 @@ $null=Add-Button $pages['2 Install'] 'Vendor cable requirements / licensing' 275
 $null=Add-Button $pages['2 Install'] 'Codex download / account setup' 320 { Start-Process 'https://chatgpt.com/codex' }
 $null=Add-Button $pages['2 Install'] 'Install plugin into Codex' 365 { Run-Helper 'InstallPlugin.ps1' }
 $null=Add-Text $pages['2 Install'] 'Install consoles show progress, cancellation and failures. Finish there, then return to Detect. The wizard never approves UAC, accepts paid purchases, changes login credentials, or restarts Windows. Old/unsigned driver packages fail closed. Cancelled or failed steps remain incomplete.' 415 130
-$null=Add-Text $pages['3 Configure'] 'Create local configuration, then record previous settings BEFORE changing audio. Set recipient explicitly (blank means ask each call). Select independent playback/recording pairs in the configuration file. This wizard saves preferences; routing changes require the observed app UI or your manual actions in the guide.' 15 85
+$null=Add-Text $pages['3 Configure'] 'Create local configuration, then record previous settings BEFORE changing audio. Set recipient explicitly (blank means ask each call). Select independent playback/recording pairs in the configuration file. This wizard saves preferences; Codex should apply routes using supported controls or another suitable design. The guide is advice, not a manual-only requirement.' 15 85
 $recipient=New-Object Windows.Forms.TextBox
 $recipient.SetBounds(15,110,600,28); $pages['3 Configure'].Controls.Add($recipient)
 if (Test-Path -LiteralPath (Join-Path $stateDir 'config.json')) {

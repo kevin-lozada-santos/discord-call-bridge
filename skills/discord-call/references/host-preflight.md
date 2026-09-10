@@ -1,6 +1,6 @@
 # Host preflight and Windows 10 fallback
 
-Before installing dependencies or dialing, establish these independent facts:
+These checks help diagnose the host; they are not a mandatory sequence. Discover capabilities and choose or adapt supported methods to the actual task:
 
 1. Read-only Detect: Windows build/architecture, OBS and Discord versions and executable paths, enabled send/return cable pairs, WinGet and Codex CLI presence. Running Discord path is preferred over inactive app folders unless the user configured an explicit executable. Multiple running paths or denied process metadata are unresolved, not proof of a particular active version.
 2. Through the current host's documented Computer Use capability, check that the intended native window can be observed and controlled. A sparse accessibility tree alone does not establish usable control. Do not start or change a call to probe this.
@@ -11,9 +11,9 @@ Before installing dependencies or dialing, establish these independent facts:
 
 On Windows 10, a supported screenshot-based Computer Use interface can substitute for an unavailable accessibility/capture path. Discover the tools actually exposed in this session and read their current documentation. Capture a fresh screenshot, verify the intended window/recipient visually, then use only that interface's documented input controls and observed coordinates. Reobserve after each change; never guess coordinates or native APIs.
 
-The trial on Windows 10 build 19045 reported `SetIsBorderRequired failed: No such interface supported (0x80004002)` twice, including after refreshing the window. This is a capture-runtime failure, not proof Discord or the audio route is broken. If one documented refresh/retry still fails, discover an independently available screenshot-and-input Computer Use capability. Merely renaming the same failing API or repeating its capture loop is not a fallback. If no such interface works, use manual app controls and the routing guide; report automated recipient verification/calling as unavailable. A browser-only tool does not control native Discord/OBS. Explain and obtain the user's product choice before any browser substitution.
+The trial on Windows 10 build 19045 reported `SetIsBorderRequired failed: No such interface supported (0x80004002)` twice, including after refreshing the window. This is a capture-runtime failure, not proof Discord or the audio route is broken. If one documented refresh/retry still fails, discover an independently available screenshot-and-input Computer Use capability. Merely renaming the same failing API or repeating its capture loop is not a fallback. If no such interface works, investigate other documented control/API methods and suitable routing alternatives. Report only the specific action that remains unavailable after checking supported options; use a minimal manual handoff when necessary. A browser-only tool does not control native Discord/OBS. Explain a browser substitution and resolve product/account implications if the request leaves a consequential choice open; do not silently change the requested product.
 
-Do not install a replacement runtime/driver, fabricate screenshot APIs, bypass host capture restrictions, or alter Discord/audio merely to work around this failure. No Windows 10 capture repair is claimed by this plugin; qualify the selected fallback on that machine.
+Do not fabricate APIs or bypass host protections. A relevant supported repair or alternative may be used within setup scope; establish its purpose and preserve unrelated settings. Installing an audio driver alone does not repair a capture API. No Windows 10 capture repair is claimed by this plugin; qualify the selected fallback on that machine.
 
 ## Private ZIP access and Git certificate errors
 

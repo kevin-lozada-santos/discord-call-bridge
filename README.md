@@ -4,9 +4,15 @@ Use a separate Discord account dedicated to ChatGPT/Codex. Do not use your perso
 
 Explicitly confirm that the dedicated account is currently signed in and in use before setup, testing, or dialing. Do not treat reading the warning, a stored recipient, old acceptance report, or prior user permissions as this confirmation. The wizard requires a fresh acknowledgement each session. If using the skill directly, obtain this explicit confirmation before proceeding; do not switch accounts or handle credentials on the user's behalf. Ending a call or restoring existing settings must remain possible without this prerequisite.
 
-A portable Codex plugin and Windows setup wizard for routing assistant Voice into Discord and caller audio back into Voice. Version 0.1.3 is a private second-machine trial, not a universal or unattended calling product.
+A portable Codex plugin and Windows setup wizard for routing assistant Voice into Discord and caller audio back into Voice. Version 0.1.4 is a private second-machine trial, not a universal or unattended calling product.
 
-## Start on the second Windows machine
+## Start with agent-led setup
+
+Ask Codex: "Act as my setup wizard and technical expert. Set up and troubleshoot Discord Call Bridge using the supported methods you judge appropriate; apply and verify the routes yourself. Treat bundled scripts and recipes as advice, and ask me only for actual user-controlled steps." Confirm the dedicated account when requested. A setup request does not authorize a call.
+
+The agent owns diagnosis and execution. Scripts, wizard pages, tool sequences and reference routes are optional aids; an unavailable preferred method is a reason to adapt, not to return a manual checklist. The account requirement and actual OS/credential/consent boundaries remain requirements.
+
+## Optional interactive wizard on the second Windows machine
 
 1. Download the release ZIP while signed into the private GitHub repository. Verify its SHA-256 against the release checksum file. Extract all files into a normal user folder. Do not run inside the ZIP.
 2. Review the scripts, then double-click **Setup.cmd**. It launches the Windows Forms wizard using Windows PowerShell 5.1 and a process-only script execution setting. It does not change machine execution policy or run Codex as administrator. If organizational policy blocks scripts, use the approved administrator process; do not bypass it.
@@ -18,7 +24,7 @@ The wizard automates supported software acquisition, narrowly scoped driver elev
 
 ## Requirements and installation details
 
-Windows x64, Windows PowerShell 5.1, Windows 10 build 19041+ or Windows 11, OBS 28+, Discord, and a Codex/ChatGPT desktop environment with working Voice and plugin support. Use two independent virtual cable pairs and headphones. Read [routing and dependency terms](skills/discord-call/references/windows-routing.md), including the older Hi-Fi driver compatibility limitation. No vendor binaries, credentials, licenses, private logs or API keys are included. No paid API voice is substituted.
+The bundled helpers/reference design target Windows x64, Windows PowerShell 5.1, Windows 10 build 19041+ or Windows 11, OBS 28+, Discord, and a Codex/ChatGPT environment with working Voice and plugin support, using two independent cable pairs and headphones. These are reference-design requirements, not unconditional blockers for other supported, verified routing solutions. Read [routing and dependency terms](skills/discord-call/references/windows-routing.md), including the older Hi-Fi driver compatibility limitation. No vendor binaries, credentials, licenses, private logs or API keys are included. No paid API voice is substituted.
 
 Python, Node, Git and GitHub CLI are not required to use the ZIP. WinGet is needed only for the app-install button; if missing use Microsoft's App Installer from Microsoft Store or the official OBS/Discord installers. Existing custom install paths can be entered in the local config before running InstallApps.
 
@@ -57,7 +63,7 @@ Keep the old ZIP/release for rollback. Run the new extracted package installer; 
 
 ## Preflight, visible installers and resume
 
-Read [host preflight and Windows 10 screenshot fallback](skills/discord-call/references/host-preflight.md) before installation. Detect reports executable selection, native-control/Voice unknowns and cable evidence. WinGet is required only when an app is missing; already-installed apps are reused without requiring it. Windows 10 can use an available supported screenshot-based Computer Use interface instead of a failed capture path; otherwise manual controls remain necessary.
+Consult [host troubleshooting and Windows 10 screenshot fallback](skills/discord-call/references/host-preflight.md) for relevant failures. Detect reports executable selection, native-control/Voice unknowns and cable evidence. WinGet is required only when an app is missing; already-installed apps are reused without requiring it. Windows 10 can use an available supported screenshot-based Computer Use interface instead of a failed capture path; otherwise the agent investigates other supported methods before handing off the specific unavailable control.
 
 Driver installers now open visibly after UAC. Their progress records distinguish Downloading, Downloaded, AwaitingUac, Pending, Cancelled, Failed, RestartRequired and DevicesDetected. A launched process or exit code never establishes working audio. Complete or cancel the visible installer; if its window is unusable, inspect that pending process before retrying. The wizard blocks launching a second console for the same helper while its previous console remains open. After any user-approved reboot, reopen Setup.cmd, confirm the dedicated account, use Detect for fresh endpoint evidence, then Finish / Restore > Refresh saved setup progress. Saved timestamps are historical evidence, not current readiness. Close an old helper console only after resolving its installer before retrying.
 
@@ -65,8 +71,8 @@ App/plugin stage records live in `%LOCALAPPDATA%\DiscordCallBridge`; driver reco
 
 ## Codex must execute requested setup
 
-Ask Codex to "set up and verify this bridge" or "fix the missing dependencies and finish setup". After the required current dedicated-account confirmation, the skill explicitly requires Codex to run the bundled setup/install helpers, apply supported native or screenshot-based routing controls, start available Voice controls and verify results. It must not stop at a checklist telling you to use the wizard while it can execute those steps itself. For audit-only or verification-only requests, it stays read-only.
+Ask Codex to "set up and verify this bridge" or "fix the missing dependencies and finish setup". After the required current dedicated-account confirmation, the skill requires Codex to own setup and diagnosis using whichever available supported methods fit, apply and verify the route, and start available Voice controls. Bundled helpers and recipes are optional. It must not stop at a checklist telling you to use the wizard while it can execute those steps itself. For audit-only or verification-only requests, it stays read-only.
 
 Manual steps are limited to actual UAC/credential/license/restart decisions or controls unavailable on the host. A native screenshot failure does not excuse skipping independent shell preparation and installer launch. See [automatic execution workflow](skills/discord-call/references/automatic-execution.md). These instructions improve agent behavior; they do not add a missing Voice engine or native automation runtime.
 
-The executable setup runner reuses detected dependencies, manages missing-dependency helper launches, avoids duplicate pending driver launches, selects unambiguous enabled cable endpoints and saves a concrete send/return route plan. Codex must apply that plan through supported OBS/Discord/Voice controls, activate Voice when available, and read back settings. Saved preferences and `ReadyForAgentApplication` are explicitly pending app application; neither is proof of configured audio. This version provides automatic device selection and an agent execution workflow, not a standalone app-routing driver.
+The executable setup runner reuses detected dependencies, manages missing-dependency helper launches, avoids duplicate pending driver launches, selects unambiguous enabled cable endpoints and saves a concrete send/return route plan. Codex can apply or adapt that plan through supported controls or choose another suitable design, activate Voice when available, and read back settings. Saved preferences and `ReadyForAgentApplication` are explicitly pending app application; neither is proof of configured audio. This version provides automatic device selection and an agent execution workflow, not a standalone app-routing driver.

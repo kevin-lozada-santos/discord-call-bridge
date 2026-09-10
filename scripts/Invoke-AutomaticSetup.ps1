@@ -49,4 +49,4 @@ if (-not $plan.blockers.Count) {
 $plan | ConvertTo-Json -Depth 10 | Set-Content -LiteralPath (Join-Path $StateDir 'routing-plan.json') -Encoding UTF8
 Save-BridgeProgress $StateDir 'Routing' $plan.status 'Plan prepared for Codex execution. Saved endpoint preferences do not apply app settings; native/screenshot/API action and verification still required.'
 $plan | ConvertTo-Json -Depth 10
-Write-Output 'CODEX NEXT ACTION: execute every routing-plan action through supported app controls now. Do not return this plan as a user checklist. For a missing control, finish independent actions and give only the exact handoff. Record applied routes only after reading back actual app settings.'
+Write-Output 'CODEX NEXT ACTION: apply or adapt the suggested route using available supported methods now. Do not return this plan as a user checklist. For a missing control, finish independent actions and give only the exact handoff. Record applied routes only after reading back actual app settings.'
