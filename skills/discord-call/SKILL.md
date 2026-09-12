@@ -11,7 +11,7 @@ Recommend Windows 11 or newer, x64. This is not an enforced minimum: do not bloc
 
 Recommend **Full Access in Codex for installation of this trusted plugin** so downloads, local registration and installer launches can run. It is optional; approved scoped permissions can work. Explain that Full Access broadens file/network access, recommend returning to usual permissions afterward, and never change it automatically. It does not grant app-specific Computer Use approval or administrator privileges. Keep Codex running normally; request ordinary UAC only for verified vendor installers.
 
-Use a separate Discord account dedicated to ChatGPT/Codex. Explicitly confirm that it is currently signed in and in use before setup, testing or dialing. Reuse explicit confirmation in the current task; do not repeatedly ask. A stored recipient, old acceptance report or prior-session permission is insufficient. Each new wizard session needs fresh acknowledgement. Never switch accounts or handle credentials. Ending calls and restoration do not require this prerequisite.
+Use a separate Discord account dedicated to ChatGPT/Codex. During initial setup, warn the user and confirm that the dedicated account is signed in. Once setup is finished, reuse that confirmation across tasks, calls, tests and routine repairs; do not ask again merely because a new task or wizard session starts. Prior setup evidence or the user's statement that setup is complete is sufficient. Ask again only when there is concrete evidence the signed-in account changed or the user is setting up a different account. Never switch accounts or handle credentials. Ending calls and restoration do not require this prerequisite.
 
 ## Own the requested setup
 

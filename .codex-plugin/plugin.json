@@ -1,16 +1,16 @@
 {
   "name": "discord-call-bridge",
-  "version": "0.1.4+codex.20260910104321",
+  "version": "0.1.5+codex.20260912001856",
   "description": "Direct, isolated two-way Discord Voice routing on Windows; Windows 11+ recommended.",
   "author": {
-    "name": "Local developer"
+    "name": "Kevin Lozada Santos"
   },
   "skills": "./skills/",
   "interface": {
     "displayName": "Discord Call Bridge",
     "shortDescription": "Direct Discord Voice routing on Windows.",
     "longDescription": "Agent-led direct app audio routing on Windows (Windows 11 or newer recommended), with two independent virtual cable pairs and explicit audio acceptance checks. Full Access in Codex is recommended for trusted installation; vendor installers still require normal UAC approval.",
-    "developerName": "Local developer",
+    "developerName": "Kevin Lozada Santos",
     "category": "Productivity",
     "capabilities": [],
     "defaultPrompt": "Act as my setup wizard and technical expert: set up, troubleshoot and verify Discord Call Bridge using the supported methods you judge appropriate. Treat bundled recipes as advice and handle the work yourself."

@@ -1,6 +1,6 @@
 # Direct Windows audio routing
 
-Recommend Windows 11 or newer, without enforcing a version minimum. Require compatible x64 Windows, Discord, working supported Voice, two independent virtual cable pairs and headphones. Verify actual compatibility on the host. Confirm the dedicated Discord account is currently in use. Preserve live unrelated audio activity.
+Recommend Windows 11 or newer, without enforcing a version minimum. Require compatible x64 Windows, Discord, working supported Voice, two independent virtual cable pairs and headphones. Verify actual compatibility on the host. Confirm the dedicated Discord account during initial setup; reuse completed setup confirmation for subsequent calls and repairs. Preserve live unrelated audio activity.
 
 Recommend Full Access in Codex for trusted installation; it is optional and does not supply app-control approvals or administrator rights. Restore normal permissions afterward. Only verified vendor installers request UAC. Read [host checks](host-preflight.md) before setup.
 

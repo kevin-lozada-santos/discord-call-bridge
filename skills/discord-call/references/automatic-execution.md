@@ -1,9 +1,9 @@
 # Agent-led direct setup
 
-For setup or repair, execute the authorized work rather than returning a checklist. These helpers and sequences are optional aids. Windows 11 or newer is recommended. Dedicated-account acknowledgement, actual consent boundaries and verified audio isolation remain requirements. Editing the package is not permission to change the host's audio.
+For setup or repair, execute the authorized work rather than returning a checklist. These helpers and sequences are optional aids. Windows 11 or newer is recommended. Initial-setup dedicated-account acknowledgement, actual consent boundaries and verified audio isolation remain requirements. Editing the package is not permission to change the host's audio.
 
 1. Audit OS, Discord, enabled endpoints and pending installers. Do not block solely on Windows version; check actual app, driver and control compatibility. Recommend Full Access for trusted installation as an optional way to avoid download/write/launch restrictions. It does not replace app-control permission or UAC, and must not be enabled automatically.
-2. Reuse the user's current-task dedicated-account confirmation. Run Bootstrap Prepare to create missing templates without overwriting settings. Capture original devices, app routes, volumes and Listen settings.
+2. Reuse the dedicated-account confirmation from completed setup across tasks; ask only during initial setup or after a known account change. Run Bootstrap Prepare to create missing templates without overwriting settings. Capture original devices, app routes, volumes and Listen settings.
 3. Install missing Discord with Bootstrap InstallApps or its official installer. Reuse existing software. Handle actual UAC/license decisions as narrow user handoffs.
 4. Reuse compatible independent send/return cable pairs. The driver helper supports verified official downloads and normal UAC. Hi-Fi Cable requires vendor compatibility review before choosing the legacy package; a signature is not compatibility proof. Do not launch duplicate pending installers or reboot automatically.
 5. After the user-approved restart, verify enabled endpoints. Run Invoke-AutomaticSetup.ps1 with DedicatedAccountConfirmed and the actual Voice application name. InstallMissing is optional and only appropriate after the selected drivers' suitability is established.

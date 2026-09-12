@@ -3,7 +3,7 @@
 Record PASS, FAIL or NOT RUN separately for each stage, with time and version. Keep account/recipient details and audio content out of public reports. A wizard checkbox is user attestation, not an automated measurement.
 
 - [ ] OS/build recorded, Windows 11+ recommendation explained and actual app/driver/control compatibility checked.
-- [ ] Current dedicated Discord account explicitly acknowledged and plugin loaded in a new task.
+- [ ] Dedicated Discord account confirmed during initial setup (reuse completed setup confirmation on later calls); plugin loaded.
 - [ ] Full Access installation recommendation explained, or suitable scoped access available; app-control and installer UAC remain separate.
 - [ ] Discord and two independent compatible cable pairs detected; no duplicate pending installs.
 - [ ] Previous app routes, devices, volume/mute and Listen settings saved.

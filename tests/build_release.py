@@ -12,7 +12,7 @@ output.mkdir(parents=True, exist_ok=True)
 version = json.loads((root / '.codex-plugin/plugin.json').read_text())['version'].split('+')[0]
 archive = output / f'discord-call-bridge-{version}-windows.zip'
 allowed_roots = {'.codex-plugin', 'skills', 'scripts', 'config', 'tests'}
-allowed_top = {'README.md', 'RESTORE.md', 'VALIDATION.md', 'Setup.cmd', '.gitignore'}
+allowed_top = {'README.md', 'RESTORE.md', 'VALIDATION.md', 'Setup.cmd', '.gitignore', 'LICENSE'}
 files = []
 for path in root.rglob('*'):
     if not path.is_file():
@@ -20,7 +20,7 @@ for path in root.rglob('*'):
     rel = path.relative_to(root)
     if rel.parts[0] not in allowed_roots and str(rel) not in allowed_top:
         continue
-    if path.suffix not in {'.md', '.json', '.ps1', '.psm1', '.cmd', '.py'} and path.name != '.gitignore':
+    if path.suffix not in {'.md', '.json', '.ps1', '.psm1', '.cmd', '.py'} and path.name not in {'.gitignore', 'LICENSE'}:
         raise ValueError(f'Unexpected release file: {rel}')
     if '__pycache__' in rel.parts or path.is_symlink():
         raise ValueError(f'Unexpected generated/link file: {rel}')
